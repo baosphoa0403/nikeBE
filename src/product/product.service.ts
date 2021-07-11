@@ -8,12 +8,11 @@ import { Product, ProductDocument } from './entities/product.entity';
 @Injectable()
 export class ProductService {
   constructor(
-    @InjectModel(Product.name) private productModel: Model<ProductDocument>,
+    @InjectModel(Product.name) private productModel: Model<Product>,
   ) {}
 
   async create(createProductDto: CreateProductDto): Promise<CreateProductDto> {
     try {
-      console.log(createProductDto);
       const createProductDTO = new this.productModel(createProductDto);
       return await createProductDTO.save();
     } catch (error) {
@@ -21,12 +20,12 @@ export class ProductService {
     }
   }
 
-  findAll() {
-    return `This action returns all product`;
+  async findAll(): Promise<CreateProductDto[]> {
+    return await this.productModel.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} product`;
+  async findOne(id: string) {
+    return await this.productModel.findById(id);
   }
 
   update(id: number, updateProductDto: UpdateProductDto) {
