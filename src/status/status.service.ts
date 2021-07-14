@@ -31,9 +31,7 @@ export class StatusService {
     const { idProduct, nameStatus } = updateStatusDto;
     const status = await this.statusModel.findById(id);
     const product = await this.productService.findOne(idProduct);
-    const listproductPush: Product[] = [];
-    listproductPush.push(product);
-    status.listProduct = listproductPush;
+    status.listProduct.push(product);
     return await status.save();
   }
 
