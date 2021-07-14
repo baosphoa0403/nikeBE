@@ -1,1 +1,4 @@
-chạy app yarn start:dev 
+chạy app yarn start:dev
+cấu hình project 
+yarn add @nestjs/config
+npm i -D @types/dotenv
