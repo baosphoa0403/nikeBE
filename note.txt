@@ -2,3 +2,30 @@ chạy app yarn start:dev
 cấu hình project 
 yarn add @nestjs/config
 npm i -D @types/dotenv
+
+/product
+getAll
+getProductByID
+search filter pagigation
+update 
+delete (update status)
+/user
+login
+register
+getDetail
+update
+delete 
+logout
+/category
+getAll
+addNew
+update
+
+/code
+crud
+/size
+create
+/gender
+create
+/role
+create
