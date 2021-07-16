@@ -5,7 +5,6 @@ export type CategoryDocument = Category & Document;
 @Schema()
 export class Category {
   @Prop()
-  @ApiProperty()
   nameCategory: string;
 }
 

@@ -16,22 +16,6 @@ export class CategoryService {
   ) {}
 
   async create(createCategoryDto: CreateCategoryDto): Promise<Category> {
-    const categoryCreate = Object.keys(createCategoryDto);
-    const fieldCreateAllow: string[] = ['nameCategory'];
-    const categoryNameError: string[] = [];
-    categoryCreate.map((item) => {
-      if (!fieldCreateAllow.includes(item)) {
-        categoryNameError.push(item);
-      }
-    });
-
-    if (categoryNameError.length > 0) {
-      let str = '';
-      categoryNameError.forEach((item) => {
-        str += item + ' ';
-      });
-      throw new NotFoundException('key ' + str + ' is invalid');
-    }
     const category = new this.productModel(createCategoryDto);
     return category.save();
   }
@@ -59,21 +43,6 @@ export class CategoryService {
     id: string,
     updateCategoryDto: UpdateCategoryDto,
   ): Promise<Category> {
-    const categoryUpdate = Object.keys(updateCategoryDto);
-    const fieldCreateAllow: string[] = ['nameCategory'];
-    const categoryNameError: string[] = [];
-    categoryUpdate.map((item) => {
-      if (!fieldCreateAllow.includes(item)) {
-        categoryNameError.push(item);
-      }
-    });
-    if (categoryNameError.length > 0) {
-      let str = '';
-      categoryNameError.forEach((item) => {
-        str += item + ' ';
-      });
-      throw new NotFoundException('key ' + str + ' is invalid');
-    }
     let category;
     try {
       category = await this.productModel.findById(id);
@@ -86,12 +55,11 @@ export class CategoryService {
         'id ' + id + ' not found in class ' + Category.name,
       );
     }
-
     category.nameCategory = updateCategoryDto.nameCategory;
     return await category.save();
   }
 
-  async remove(id: string): Promise<Category> {
+  async remove(id: string): Promise<string> {
     let category;
     try {
       category = await this.productModel.findById(id);
@@ -104,7 +72,7 @@ export class CategoryService {
         'id ' + id + ' not found in class ' + Category.name,
       );
     }
-
-    return category.remove();
+    category.remove();
+    return `delete category ${id} successfull`;
   }
 }
