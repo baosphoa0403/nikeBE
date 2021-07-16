@@ -7,8 +7,10 @@ import {
   Param,
   Delete,
   UseFilters,
+  MethodNotAllowedException,
 } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { IsMongoId } from 'class-validator';
 import { response } from 'express';
 import { HttpExceptionFilter } from 'src/exception/ExceptionFilter';
 import { CategoryService } from './category.service';

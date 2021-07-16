@@ -1,11 +1,14 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { Category } from './entities/category.entity';
-import FieldWrongExceptionCustom from '../exception/FieldWrongExceptionCustom.exception';
-import EntiyNotFoundCustom from 'src/exception/EntiyNotFoundCustom.exception';
+
 @Injectable()
 export class CategoryService {
   constructor(
@@ -21,8 +24,13 @@ export class CategoryService {
         categoryNameError.push(item);
       }
     });
+
     if (categoryNameError.length > 0) {
-      throw new FieldWrongExceptionCustom(categoryNameError);
+      let str = '';
+      categoryNameError.forEach((item) => {
+        str += item + ' ';
+      });
+      throw new NotFoundException('key ' + str + ' is invalid');
     }
     const category = new this.productModel(createCategoryDto);
     return category.save();
@@ -33,9 +41,16 @@ export class CategoryService {
   }
 
   async findOne(id: string): Promise<Category> {
-    const category = await this.productModel.findById(id);
+    let category;
+    try {
+      category = await this.productModel.findById(id);
+    } catch (error) {
+      throw new BadRequestException(id + ' invalid format');
+    }
     if (!category) {
-      throw new EntiyNotFoundCustom(id, Category.name);
+      throw new NotFoundException(
+        'id ' + id + ' not found in class ' + Category.name,
+      );
     }
     return category;
   }
@@ -53,12 +68,23 @@ export class CategoryService {
       }
     });
     if (categoryNameError.length > 0) {
-      throw new FieldWrongExceptionCustom(categoryNameError);
+      let str = '';
+      categoryNameError.forEach((item) => {
+        str += item + ' ';
+      });
+      throw new NotFoundException('key ' + str + ' is invalid');
     }
-    const category = await this.productModel.findById(id);
+    let category;
+    try {
+      category = await this.productModel.findById(id);
+    } catch (error) {
+      throw new BadRequestException(id + ' invalid format');
+    }
 
     if (!category) {
-      throw new EntiyNotFoundCustom(id, Category.name);
+      throw new NotFoundException(
+        'id ' + id + ' not found in class ' + Category.name,
+      );
     }
 
     category.nameCategory = updateCategoryDto.nameCategory;
@@ -66,10 +92,17 @@ export class CategoryService {
   }
 
   async remove(id: string): Promise<Category> {
-    const category = await this.productModel.findById(id);
+    let category;
+    try {
+      category = await this.productModel.findById(id);
+    } catch (error) {
+      throw new BadRequestException(id + ' invalid format');
+    }
 
     if (!category) {
-      throw new EntiyNotFoundCustom(id, Category.name);
+      throw new NotFoundException(
+        'id ' + id + ' not found in class ' + Category.name,
+      );
     }
 
     return category.remove();
