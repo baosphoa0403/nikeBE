@@ -1,0 +1,31 @@
+import { ApiProperty } from "@nestjs/swagger";
+import { IsDate, IsDateString, IsEmail, IsMongoId } from "class-validator";
+import { IsNotBlank } from "src/custom-validator/is-not-blank.validator";
+
+export class CreateUserDto {
+    @IsNotBlank('username',{message:'username can not empty'})
+    @ApiProperty({type:String})
+    username: string;
+
+    @IsNotBlank('password', {message:'password can not empty'})
+    @ApiProperty({type:String})
+    password: string;
+    
+    @IsEmail()
+    email: string;
+
+    @IsNotBlank('name',{message:'name can not empty'})
+    @ApiProperty({type:String})
+    name: string;
+
+    @IsDateString()
+    @ApiProperty({type:Date})
+    yearOfBirth: Date;
+
+    @ApiProperty({type:String})
+    address: string;
+
+    @IsMongoId()
+    @ApiProperty({type:String})
+    roleId: string;
+}

@@ -1,0 +1,31 @@
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import * as mongoose from 'mongoose';
+import { Role } from "src/role/entities/role.entity";
+
+export type UserDocument = User & Document;
+
+@Schema()
+export class User {
+
+    @Prop()
+    username: string;
+
+    @Prop()
+    password: string;
+    
+    @Prop()
+    email: string;
+
+    @Prop()
+    name: string;
+
+    @Prop()
+    yearOfBirth: Date;
+
+    @Prop()
+    address: string;
+
+    @Prop({type: mongoose.Schema.Types.ObjectId, ref: 'Role'})
+    role: Role
+}
+export const UserSchema = SchemaFactory.createForClass(User);
