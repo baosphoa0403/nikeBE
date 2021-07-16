@@ -8,7 +8,7 @@ import { Request, Response } from 'express';
 
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
-  catch(exception: HttpException, host: ArgumentsHost) {
+  catch(exception: any, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
@@ -17,9 +17,10 @@ export class HttpExceptionFilter implements ExceptionFilter {
     response.status(status).json({
       statusCode: status,
       name: exception.name,
-      message: exception.message,
+      message:
+        exception.response.message || exception.response || exception.message,
       timestamp: new Date().toISOString(),
-      path: request.url,
+      path: request ? request.url : null,
     });
   }
 }
