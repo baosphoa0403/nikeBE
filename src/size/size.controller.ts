@@ -6,6 +6,8 @@ import {
   Patch,
   Param,
   Delete,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { SizeService } from './size.service';
 import { CreateSizeDto } from './dto/create-size.dto';
@@ -16,6 +18,7 @@ export class SizeController {
   constructor(private readonly sizeService: SizeService) {}
 
   @Post()
+  @UsePipes(ValidationPipe)
   create(@Body() createSizeDto: CreateSizeDto) {
     return this.sizeService.create(createSizeDto);
   }

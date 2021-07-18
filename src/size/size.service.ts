@@ -33,7 +33,7 @@ export class SizeService {
     try {
       size = await this.sizeModel.findById(id);
     } catch (error) {
-      throw new NotFoundException(`Could not find size with id = ${id}`);
+      throw new NotFoundException(`id = ${id} is invalid`);
     }
     if (!size) {
       throw new NotFoundException(`Could not find size with id = ${id}`);
