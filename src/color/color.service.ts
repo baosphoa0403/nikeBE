@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateColorDto } from './dto/create-color.dto';
@@ -12,6 +16,12 @@ export class ColorService {
   ) {}
 
   async create(createColorDto: CreateColorDto): Promise<Color> {
+    // Filter out unwanted fields names
+    const filterBody = this.filterObj(CreateColorDto, 'nameColor');
+    if (Object.keys(filterBody).length === 0) {
+      throw new BadRequestException('Fields are invalid');
+    }
+
     const createdColor = new this.colorModel(createColorDto);
     return await createdColor.save();
   }
@@ -45,13 +55,19 @@ export class ColorService {
   };
 
   async update(id: string, updateColorDto: UpdateColorDto): Promise<Color> {
+    let updatedColor = await this.findOne(id);
+
     // Filter out unwanted fields names that are not allowed to be updated
     const filterBody = this.filterObj(updateColorDto, 'nameColor');
+    if (Object.keys(filterBody).length === 0) {
+      throw new BadRequestException('Fields are invalid');
+    }
 
-    const updatedColor = await this.colorModel.findByIdAndUpdate(
-      id,
-      filterBody,
-    );
+    updatedColor = await this.colorModel.findByIdAndUpdate(id, updateColorDto, {
+      new: true,
+      runValidators: true,
+    });
+
     return updatedColor;
   }
 
