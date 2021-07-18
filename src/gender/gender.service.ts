@@ -35,7 +35,7 @@ export class GenderService {
     try {
       gender = await this.genderModel.findById(id);
     } catch (error) {
-      throw new NotFoundException(`Could not find color with id = ${id}`);
+      throw new NotFoundException(`id = ${id} is invalid`);
     }
     if (!gender) {
       throw new NotFoundException(`Could not find color with id = ${id}`);

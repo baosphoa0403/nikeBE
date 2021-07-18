@@ -6,6 +6,8 @@ import {
   Patch,
   Param,
   Delete,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { GenderService } from './gender.service';
 import { CreateGenderDto } from './dto/create-gender.dto';
@@ -16,6 +18,7 @@ export class GenderController {
   constructor(private readonly genderService: GenderService) {}
 
   @Post()
+  @UsePipes(ValidationPipe)
   create(@Body() createGenderDto: CreateGenderDto) {
     return this.genderService.create(createGenderDto);
   }
