@@ -6,6 +6,8 @@ import {
   Patch,
   Param,
   Delete,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { ColorService } from './color.service';
 import { CreateColorDto } from './dto/create-color.dto';
@@ -17,6 +19,7 @@ export class ColorController {
   constructor(private readonly colorService: ColorService) {}
 
   @Post()
+  @UsePipes(ValidationPipe)
   create(@Body() createColorDto: CreateColorDto): Promise<Color> {
     return this.colorService.create(createColorDto);
   }

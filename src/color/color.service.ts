@@ -16,12 +16,6 @@ export class ColorService {
   ) {}
 
   async create(createColorDto: CreateColorDto): Promise<Color> {
-    // Filter out unwanted fields names
-    const filterBody = this.filterObj(CreateColorDto, 'nameColor');
-    if (Object.keys(filterBody).length === 0) {
-      throw new BadRequestException('Fields are invalid');
-    }
-
     const createdColor = new this.colorModel(createColorDto);
     return await createdColor.save();
   }
@@ -35,7 +29,7 @@ export class ColorService {
     try {
       color = await this.colorModel.findById(id);
     } catch (error) {
-      throw new NotFoundException(`Could not find color with id = ${id}`);
+      throw new NotFoundException(`id = ${id} is invalid format`);
     }
     if (!color) {
       throw new NotFoundException(`Could not find color with id = ${id}`);
