@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateGenderDto } from './dto/create-gender.dto';
@@ -12,6 +16,12 @@ export class GenderService {
   ) {}
 
   async create(createGenderDto: CreateGenderDto): Promise<Gender> {
+    // Filter out unwanted fields names that are not allowed to be updated
+    const filterBody = this.filterObj(createGenderDto, 'nameGender');
+    if (Object.keys(filterBody).length === 0) {
+      throw new BadRequestException('Fields are invalid');
+    }
+
     const createdGender = new this.genderModel(createGenderDto);
     return await createdGender.save();
   }
@@ -45,13 +55,23 @@ export class GenderService {
   };
 
   async update(id: string, updateGenderDto: UpdateGenderDto) {
+    let updatedGender = await this.findOne(id);
+
     // Filter out unwanted fields names that are not allowed to be updated
     const filterBody = this.filterObj(updateGenderDto, 'nameGender');
+    if (Object.keys(filterBody).length === 0) {
+      throw new BadRequestException('Fields are invalid');
+    }
 
-    const updatedGender = await this.genderModel.findByIdAndUpdate(
+    updatedGender = await this.genderModel.findByIdAndUpdate(
       id,
-      filterBody,
+      updateGenderDto,
+      {
+        new: true,
+        runValidators: true,
+      },
     );
+
     return updatedGender;
   }
 
