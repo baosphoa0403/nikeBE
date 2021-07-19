@@ -21,7 +21,6 @@ export class GenderController {
   constructor(private readonly genderService: GenderService) {}
 
   @Post()
-  @UsePipes(ValidationPipe)
   create(@Body() createGenderDto: CreateGenderDto): Promise<Gender> {
     return this.genderService.create(createGenderDto);
   }
