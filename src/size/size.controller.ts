@@ -21,7 +21,6 @@ export class SizeController {
   constructor(private readonly sizeService: SizeService) {}
 
   @Post()
-  @UsePipes(ValidationPipe)
   create(@Body() createSizeDto: CreateSizeDto): Promise<Size> {
     return this.sizeService.create(createSizeDto);
   }
