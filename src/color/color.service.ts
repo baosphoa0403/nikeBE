@@ -37,25 +37,8 @@ export class ColorService {
     return color;
   }
 
-  filterObj = (userFields, ...allowedFields) => {
-    const newObj = {};
-    Object.keys(userFields).forEach((el) => {
-      if (allowedFields.includes(el)) {
-        newObj[el] = userFields[el];
-      }
-    });
-
-    return newObj;
-  };
-
   async update(id: string, updateColorDto: UpdateColorDto): Promise<Color> {
     let updatedColor = await this.findOne(id);
-
-    // Filter out unwanted fields names that are not allowed to be updated
-    const filterBody = this.filterObj(updateColorDto, 'nameColor');
-    if (Object.keys(filterBody).length === 0) {
-      throw new BadRequestException('Fields are invalid');
-    }
 
     updatedColor = await this.colorModel.findByIdAndUpdate(id, updateColorDto, {
       new: true,
@@ -65,9 +48,9 @@ export class ColorService {
     return updatedColor;
   }
 
-  async remove(id: string): Promise<void> {
+  async remove(id: string): Promise<string> {
     const color = await this.findOne(id);
     await this.colorModel.deleteOne({ _id: id });
-    return null;
+    return `delete nameColor ${id} successfully`;
   }
 }

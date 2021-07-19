@@ -1,10 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty } from 'class-validator';
 
-export class UpdateColorDto {
+export class CreateCategoryDto {
   @IsNotEmpty()
   @ApiProperty({
     type: String,
   })
-  nameColor: string;
+  nameCategory: string;
 }
