@@ -16,12 +16,6 @@ export class GenderService {
   ) {}
 
   async create(createGenderDto: CreateGenderDto): Promise<Gender> {
-    // Filter out unwanted fields names that are not allowed to be updated
-    const filterBody = this.filterObj(createGenderDto, 'nameGender');
-    if (Object.keys(filterBody).length === 0) {
-      throw new BadRequestException('Fields are invalid');
-    }
-
     const createdGender = new this.genderModel(createGenderDto);
     return await createdGender.save();
   }
@@ -30,7 +24,7 @@ export class GenderService {
     return await this.genderModel.find();
   }
 
-  async findOne(id: string) {
+  async findOne(id: string): Promise<Gender> {
     let gender;
     try {
       gender = await this.genderModel.findById(id);
@@ -43,25 +37,8 @@ export class GenderService {
     return gender;
   }
 
-  filterObj = (userFields, ...allowedFields) => {
-    const newObj = {};
-    Object.keys(userFields).forEach((el) => {
-      if (allowedFields.includes(el)) {
-        newObj[el] = userFields[el];
-      }
-    });
-
-    return newObj;
-  };
-
-  async update(id: string, updateGenderDto: UpdateGenderDto) {
+  async update(id: string, updateGenderDto: UpdateGenderDto): Promise<Gender> {
     let updatedGender = await this.findOne(id);
-
-    // Filter out unwanted fields names that are not allowed to be updated
-    const filterBody = this.filterObj(updateGenderDto, 'nameGender');
-    if (Object.keys(filterBody).length === 0) {
-      throw new BadRequestException('Fields are invalid');
-    }
 
     updatedGender = await this.genderModel.findByIdAndUpdate(
       id,
@@ -75,9 +52,9 @@ export class GenderService {
     return updatedGender;
   }
 
-  async remove(id: string) {
-    const color = await this.findOne(id);
+  async remove(id: string): Promise<string> {
+    const gender = await this.findOne(id);
     await this.genderModel.deleteOne({ _id: id });
-    return null;
+    return `delete nameGender ${id} successfully`;
   }
 }
