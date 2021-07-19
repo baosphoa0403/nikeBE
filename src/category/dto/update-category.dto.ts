@@ -1,12 +1,12 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty } from 'class-validator';
-import { CreateSizeDto } from './create-size.dto';
+import { CreateCategoryDto } from './create-category.dto';
 
-export class UpdateSizeDto extends PartialType(CreateSizeDto) {
+export class UpdateCategoryDto {
   @IsNotEmpty()
   @ApiProperty({
     type: String,
   })
-  nameSize: string;
+  nameCategory: string;
 }

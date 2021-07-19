@@ -13,22 +13,16 @@ import { Size, SizeDocument } from './entities/size.entity';
 export class SizeService {
   constructor(@InjectModel(Size.name) private sizeModel: Model<SizeDocument>) {}
 
-  async create(createSizeDto: CreateSizeDto) {
-    // Filter out unwanted fields names
-    const filterBody = this.filterObj(createSizeDto, 'nameSize');
-    if (Object.keys(filterBody).length === 0) {
-      throw new BadRequestException('Fields are invalid');
-    }
-
+  async create(createSizeDto: CreateSizeDto): Promise<Size> {
     const createdSize = new this.sizeModel(createSizeDto);
     return await createdSize.save();
   }
 
-  async findAll() {
+  async findAll(): Promise<Size[]> {
     return await this.sizeModel.find();
   }
 
-  async findOne(id: string) {
+  async findOne(id: string): Promise<Size> {
     let size;
     try {
       size = await this.sizeModel.findById(id);
@@ -41,26 +35,8 @@ export class SizeService {
     return size;
   }
 
-  filterObj = (userFields, ...allowedFields) => {
-    const newObj = {};
-    Object.keys(userFields).forEach((el) => {
-      if (allowedFields.includes(el)) {
-        newObj[el] = userFields[el];
-      }
-    });
-
-    return newObj;
-  };
-
-  async update(id: string, updateSizeDto: UpdateSizeDto) {
+  async update(id: string, updateSizeDto: UpdateSizeDto): Promise<Size> {
     let updatedSize = await this.findOne(id);
-
-    // Filter out unwanted fields names that are not allowed to be updated
-    const filterBody = this.filterObj(updateSizeDto, 'nameSize');
-    if (Object.keys(filterBody).length === 0) {
-      throw new BadRequestException('Fields are invalid');
-    }
-
     updatedSize = await this.sizeModel.findByIdAndUpdate(id, updateSizeDto, {
       new: true,
       runValidators: true,
@@ -69,9 +45,9 @@ export class SizeService {
     return updatedSize;
   }
 
-  async remove(id: string) {
-    const color = await this.findOne(id);
+  async remove(id: string): Promise<string> {
+    const size = await this.findOne(id);
     await this.sizeModel.deleteOne({ _id: id });
-    return null;
+    return `delete size id = ${id} successfully`;
   }
 }

@@ -1,4 +1,10 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  forwardRef,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Product } from 'src/product/entities/product.entity';
@@ -24,18 +30,43 @@ export class StatusService {
   }
 
   async findOne(id: string): Promise<Status> {
-    return await this.statusModel.findById(id);
+    let status;
+    try {
+      status = await this.statusModel.findById(id);
+    } catch (error) {
+      throw new BadRequestException(id + ' invalid format');
+    }
+    if (!status) {
+      throw new NotFoundException(
+        'id ' + id + ' not found in class ' + Status.name,
+      );
+    }
+    return status;
   }
 
-  async update(id: string, updateStatusDto: UpdateStatusDto) {
+  async update(id: string, updateStatusDto: UpdateStatusDto): Promise<Status> {
     const { idProduct, nameStatus } = updateStatusDto;
     const status = await this.statusModel.findById(id);
     const product = await this.productService.findOne(idProduct);
+    status.nameStatus = nameStatus;
     status.listProduct.push(product);
     return await status.save();
   }
 
-  remove(id: string) {
-    return `This action removes a #${id} status`;
+  async remove(id: string): Promise<string> {
+    let status;
+    try {
+      status = await this.statusModel.findById(id);
+    } catch (error) {
+      throw new BadRequestException(id + ' invalid format');
+    }
+
+    if (!status) {
+      throw new NotFoundException(
+        'id ' + id + ' not found in class ' + Status.name,
+      );
+    }
+    status.remove();
+    return `delete status ${id} successfull`;
   }
 }

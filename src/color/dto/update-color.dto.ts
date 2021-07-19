@@ -1,10 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty } from 'class-validator';
 
-export class CreateSizeDto {
+export class UpdateColorDto {
   @IsNotEmpty()
   @ApiProperty({
     type: String,
   })
-  nameSize: string;
+  nameColor: string;
 }
