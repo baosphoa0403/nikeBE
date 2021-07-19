@@ -12,6 +12,7 @@ export class CreateUserDto {
     password: string;
     
     @IsEmail()
+    @ApiProperty({type:String})
     email: string;
 
     @IsNotBlank('name',{message:'name can not empty'})
@@ -24,6 +25,10 @@ export class CreateUserDto {
 
     @ApiProperty({type:String})
     address: string;
+
+    @IsMongoId()
+    @ApiProperty({type:String})
+    statusId: string;
 
     @IsMongoId()
     @ApiProperty({type:String})
