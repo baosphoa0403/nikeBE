@@ -49,7 +49,6 @@ export class ColorService {
   }
 
   async remove(id: string): Promise<string> {
-    const color = await this.findOne(id);
     await this.colorModel.deleteOne({ _id: id });
     return `delete nameColor ${id} successfully`;
   }
