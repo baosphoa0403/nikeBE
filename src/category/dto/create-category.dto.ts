@@ -1,13 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty } from 'class-validator';
-import { Status } from '../entities/status.entity';
 
-export class CreateStatusDto {
+export class CreateCategoryDto {
   @IsNotEmpty()
   @ApiProperty({
     type: String,
   })
-  nameStatus: string;
-
-  listProduct: Status[];
+  nameCategory: string;
 }
