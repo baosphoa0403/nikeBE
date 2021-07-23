@@ -25,5 +25,9 @@ export class UpdateUserDto{
 
     @IsMongoId()
     @ApiProperty({type:String})
+    statusId: string;
+
+    @IsMongoId()
+    @ApiProperty({type:String})
     roleId: string;
 }
