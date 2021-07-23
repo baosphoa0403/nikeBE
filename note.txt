@@ -32,3 +32,5 @@ create
 
 cách đặt tên nhánh 
 tenMinhChucNang
+
+nest -> nest g res <ten folder>
