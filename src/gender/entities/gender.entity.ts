@@ -5,7 +5,6 @@ export type GenderDocument = Gender & Document;
 @Schema()
 export class Gender {
   @Prop({ String, required: [true, 'nameGender is required'] })
-  @ApiProperty()
   nameGender: string;
 }
 
