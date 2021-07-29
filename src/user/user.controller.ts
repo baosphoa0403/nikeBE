@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -28,7 +36,7 @@ export class UserController {
     description: 'Get all User',
     type: [User],
   })
-  findAll():Promise<User[]> {
+  findAll(): Promise<User[]> {
     return this.userService.findAllUser();
   }
 
@@ -38,7 +46,7 @@ export class UserController {
     description: 'Get a User by id',
     type: User,
   })
-  findOne(@Param() idUserDto: IdRoleDto):Promise<User> {
+  findOne(@Param() idUserDto: IdRoleDto): Promise<User> {
     return this.userService.findOneUser(idUserDto);
   }
 
@@ -49,9 +57,9 @@ export class UserController {
     type: User,
   })
   update(
-    @Param() idUserDto: IdUserDto, 
-    @Body() updateUserDto: UpdateUserDto
-    ):Promise<User> {
+    @Param() idUserDto: IdUserDto,
+    @Body() updateUserDto: UpdateUserDto,
+  ): Promise<User> {
     return this.userService.updateUser(idUserDto, updateUserDto);
   }
 
@@ -61,7 +69,7 @@ export class UserController {
     description: 'Delete a User by id',
     type: String,
   })
-  remove(@Param() idUserDto: IdUserDto):Promise<string> {
+  remove(@Param() idUserDto: IdUserDto): Promise<string> {
     return this.userService.removeUser(idUserDto);
   }
 }
