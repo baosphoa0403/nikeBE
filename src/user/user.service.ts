@@ -49,7 +49,7 @@ export class UserService {
     return await this.userModel.find({}, { password: 0 }).populate('role');
   }
 
-  async findOneUser(idUserDto: IdRoleDto): Promise<User> {
+  async findOneUser(idUserDto: IdUserDto): Promise<User> {
     const user = await this.userModel
       .findById(idUserDto.id, { password: 0 })
       .populate('role');
@@ -58,9 +58,12 @@ export class UserService {
 
     return user;
   }
+  async findUserByEmail(email: string): Promise<User> {
+    return await this.userModel.findOne({ email: email }).populate('role');
+  }
 
   async updateUser(
-    idUserDto: IdRoleDto,
+    idUserDto: IdUserDto,
     updateUserDto: UpdateUserDto,
   ): Promise<User> {
     const user = await this.userModel.findById(idUserDto.id).populate('role');
