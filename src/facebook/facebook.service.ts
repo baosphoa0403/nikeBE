@@ -1,16 +1,26 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, HttpStatus, Injectable } from '@nestjs/common';
+import { AuthService } from 'src/auth/auth.service';
 import { User } from 'src/user/entities/user.entity';
 import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class FacebookService {
-  constructor(private usersService: UserService) {}
+  constructor(
+    private usersService: UserService,
+    private authService: AuthService,
+  ) {}
 
-  async checkExistUserByEmail(email: string): Promise<User> {
-    const user = await this.usersService.findUserByEmail(email);
-    if (!user) {
-      return null;
+  async loginFacebook(req) {
+    if (!req.user) {
+      throw new BadRequestException();
     }
-    return user;
+    const user = await this.usersService.findUserByEmail(req.user.email);
+    if (user == null) {
+      return {
+        data: req.user,
+        statusCode: HttpStatus.PERMANENT_REDIRECT,
+      };
+    }
+    return this.authService.login(user);
   }
 }
