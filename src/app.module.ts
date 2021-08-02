@@ -10,6 +10,7 @@ import { ColorModule } from './color/color.module';
 import { CategoryModule } from './category/category.module';
 import { RoleModule } from './role/role.module';
 import { UserModule } from './user/user.module';
+import { GoogleModule } from './google/google.module';
 import { AuthModule } from './auth/auth.module';
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { AuthModule } from './auth/auth.module';
     CategoryModule,
     RoleModule,
     UserModule,
+    GoogleModule,
     AuthModule,
   ],
   controllers: [AppController],
