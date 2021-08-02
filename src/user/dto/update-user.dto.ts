@@ -10,6 +10,7 @@ export class UpdateUserDto{
     password: string;
     
     @IsEmail()
+    @ApiProperty({type:String})
     email: string;
 
     @IsNotBlank('name',{message:'name can not empty'})
