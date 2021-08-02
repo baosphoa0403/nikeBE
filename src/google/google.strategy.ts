@@ -8,6 +8,7 @@ config();
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
   constructor() {
+    
     super({
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_SECRET,
@@ -20,7 +21,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     const { name, emails, photos } = profile
     const user = {
       email: emails[0].value,
-      name: `${name.givenName} ${name.familyName}`,
+      name: `${name.givenName?name.givenName:""} ${name.familyName?name.familyName:""}`,
     //   picture: photos[0].value,
       accessToken
     }
