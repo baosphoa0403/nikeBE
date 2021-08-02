@@ -7,14 +7,15 @@ import { Role, RoleSchema } from 'src/role/entities/role.entity';
 import { Status, StatusSchema } from 'src/status/entities/status.entity';
 
 @Module({
-  imports:[
+  imports: [
     MongooseModule.forFeature([
-      {name: User.name, schema: UserSchema},
-      {name: Role.name, schema: RoleSchema},
-      {name: Status.name, schema: StatusSchema},
+      { name: User.name, schema: UserSchema },
+      { name: Role.name, schema: RoleSchema },
+      { name: Status.name, schema: StatusSchema },
     ]),
   ],
   controllers: [UserController],
-  providers: [UserService]
+  providers: [UserService],
+  exports: [UserService],
 })
 export class UserModule {}
