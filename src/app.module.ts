@@ -12,6 +12,9 @@ import { RoleModule } from './role/role.module';
 import { UserModule } from './user/user.module';
 import { GoogleModule } from './google/google.module';
 import { AuthModule } from './auth/auth.module';
+import { FacebookModule } from './facebook/facebook.module';
+import * as mongoose from 'mongoose';
+mongoose.set('useCreateIndex', true);
 @Module({
   imports: [
     ProductModule,
@@ -25,6 +28,7 @@ import { AuthModule } from './auth/auth.module';
     UserModule,
     GoogleModule,
     AuthModule,
+    FacebookModule,
   ],
   controllers: [AppController],
   providers: [AppService],

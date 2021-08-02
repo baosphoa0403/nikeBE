@@ -6,15 +6,15 @@ import { Roles } from './Guards/roles.decorator';
 // import { Roles } from './Guards/roles.decorator';
 
 @Controller()
-@UseGuards(RolesGuard)
+// @UseGuards(RolesGuard)
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  // @Get()
+  @Get()
   // @Roles('admin')
-  // getHello(): string {
-  //   return this.appService.getHello();
-  // }
+  getHello(): string {
+    return this.appService.getHello();
+  }
 
   // @Get('/hello')
   // @Roles('user')

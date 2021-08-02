@@ -1,4 +1,9 @@
-import { BadRequestException, HttpException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { exception } from 'console';
 import { Model } from 'mongoose';
@@ -41,21 +46,26 @@ export class UserService {
       role: roleId,
     });
     const userSave = await user.save().catch((err) => {
-      throw new BadRequestException("Username or email is existed");
+      throw new BadRequestException('Username or email is existed');
     });
     return this.userModel
       .findById(userSave._id, { password: 0 })
-      .populate('role').populate('status');
+      .populate('role')
+      .populate('status');
   }
 
   async findAllUser(): Promise<User[]> {
-    return await this.userModel.find({}, { password: 0 }).populate('role').populate('status');
+    return await this.userModel
+      .find({}, { password: 0 })
+      .populate('role')
+      .populate('status');
   }
 
   async findOneUser(idUserDto: IdUserDto): Promise<User> {
     const user = await this.userModel
       .findById(idUserDto.id, { password: 0 })
-      .populate('role').populate('status');
+      .populate('role')
+      .populate('status');
 
     if (!user) throw new NotFoundException(`id ${idUserDto.id} not found`);
 
@@ -91,11 +101,12 @@ export class UserService {
     user.role = role;
 
     const userSave = await user.save().catch((err) => {
-      throw new BadRequestException("Email already used");
+      throw new BadRequestException('Email already used');
     });
     return await this.userModel
       .findById(userSave._id, { password: 0 })
-      .populate('role').populate('status');
+      .populate('role')
+      .populate('status');
   }
 
   async removeUser(idUserDto: IdUserDto): Promise<string> {
