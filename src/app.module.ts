@@ -11,6 +11,7 @@ import { CategoryModule } from './category/category.module';
 import { RoleModule } from './role/role.module';
 import { UserModule } from './user/user.module';
 import { GoogleModule } from './google/google.module';
+import { AuthModule } from './auth/auth.module';
 @Module({
   imports: [
     ProductModule,
@@ -23,6 +24,7 @@ import { GoogleModule } from './google/google.module';
     RoleModule,
     UserModule,
     GoogleModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
