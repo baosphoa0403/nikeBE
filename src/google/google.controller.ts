@@ -1,18 +1,19 @@
 import { Controller, Get, Req, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { ApiTags } from '@nestjs/swagger';
 import { GoogleService } from './google.service';
-
+@ApiTags('Google')
 @Controller('google')
-export class GoogleController{
-    constructor(private readonly googleService:GoogleService){}
+export class GoogleController {
+  constructor(private readonly googleService: GoogleService) {}
 
-    @Get()
-    @UseGuards(AuthGuard('google'))
-    async googleAuth(@Req() req){}
+  @Get()
+  @UseGuards(AuthGuard('google'))
+  async googleAuth(@Req() req) {}
 
-    @Get('redirect')
-    @UseGuards(AuthGuard('google'))
-    googleAuthRedirect(@Req() req){
-        return this.googleService.googleLogin(req);
-    }
+  @Get('redirect')
+  @UseGuards(AuthGuard('google'))
+  googleAuthRedirect(@Req() req) {
+    return this.googleService.googleLogin(req);
+  }
 }
