@@ -4,6 +4,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { IdUserDto } from 'src/user/dto/id-user.dto';
 import { UserService } from 'src/user/user.service';
 import { jwtConstants } from './constants';
+import { Payload } from './role/payload';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
@@ -16,7 +17,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     });
   }
 
-  async validate(payload: any) {
+  async validate(payload: Payload) {
     return payload;
   }
 }
