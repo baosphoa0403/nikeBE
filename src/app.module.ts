@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -14,6 +14,8 @@ import { GoogleModule } from './google/google.module';
 import { AuthModule } from './auth/auth.module';
 import { FacebookModule } from './facebook/facebook.module';
 import * as mongoose from 'mongoose';
+import { LoggerMiddleware } from './middleware/logger-middleware';
+import { CategoryController } from './category/category.controller';
 mongoose.set('useCreateIndex', true);
 @Module({
   imports: [
@@ -33,4 +35,9 @@ mongoose.set('useCreateIndex', true);
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware).forRoutes(CategoryController);
+    console.log(consumer);
+  }
+}
