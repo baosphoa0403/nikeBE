@@ -93,21 +93,36 @@ export class UserService {
         `id status: ${updateUserDto.statusId} not found`,
       );
 
-    user.password = updateUserDto.password;
-    user.email = updateUserDto.email;
-    user.name = updateUserDto.name;
-    user.yearOfBirth = updateUserDto.yearOfBirth;
-    user.address = updateUserDto.address;
-    user.status = status;
-    user.role = role;
+    const salt = await bcrypt.genSalt();
+    const hashpassword = this.hashPassword(updateUserDto.password, salt);
+    const { name, email, yearOfBirth, address } = updateUserDto;
 
-    const userSave = await user.save().catch((err) => {
-      throw new BadRequestException('Email already used');
-    });
-    return await this.userModel
-      .findById(userSave._id, { password: 0 })
+    const updatedUser = await this.userModel
+      .findByIdAndUpdate(
+        idUserDto.id,
+        { name, email, hashpassword, yearOfBirth, address, status, role },
+        { new: true, runValidators: true },
+      )
       .populate('role')
       .populate('status');
+
+    return updatedUser;
+
+    // user.password = updateUserDto.password;
+    // user.email = updateUserDto.email;
+    // user.name = updateUserDto.name;
+    // user.yearOfBirth = updateUserDto.yearOfBirth;
+    // user.address = updateUserDto.address;
+    // user.status = status;
+    // user.role = role;
+
+    // const userSave = await user.save().catch((err) => {
+    //   throw new BadRequestException('Email already used');
+    // });
+    // return await this.userModel
+    //   .findById(userSave._id, { password: 0 })
+    //   .populate('role')
+    //   .populate('status');
   }
 
   async removeUser(idUserDto: IdUserDto): Promise<string> {
