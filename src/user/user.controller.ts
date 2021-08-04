@@ -18,6 +18,7 @@ import { JwtAuthGuard } from 'src/Guards/jwt-auth-guard';
 import { LocalAuthGuard } from 'src/Guards/local-auth-guard';
 import { RolesGuard } from 'src/Guards/roles-guard';
 import { Roles } from 'src/Guards/roles.decorator';
+import { Role } from 'src/auth/role/role.enum';
 
 @Controller('user')
 @ApiTags('User')
@@ -35,7 +36,7 @@ export class UserController {
   }
   @Get()
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('Admin')
+  @Roles(Role.Admin)
   @ApiResponse({
     status: 200,
     description: 'Get all User',
