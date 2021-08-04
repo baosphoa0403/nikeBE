@@ -7,6 +7,7 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { exception } from 'console';
 import { Model } from 'mongoose';
+import * as bcrypt from 'bcrypt';
 import { IdRoleDto } from 'src/role/dto/id-role.dto';
 import { Role } from 'src/role/entities/role.entity';
 import { Status } from 'src/status/entities/status.entity';
@@ -23,17 +24,16 @@ export class UserService {
     @InjectModel(Status.name) private StatusModel: Model<Status>,
   ) {}
 
+  private async hashPassword(password: string, salt: string): Promise<string> {
+    return bcrypt.hash(password, salt);
+  }
+
   async createUser(createUserDto: CreateUserDto): Promise<User> {
-    const {
-      username,
-      password,
-      email,
-      name,
-      yearOfBirth,
-      address,
-      statusId,
-      roleId,
-    } = createUserDto;
+    const salt = await bcrypt.genSalt();
+    const password = await this.hashPassword(createUserDto.password, salt);
+
+    const { username, email, name, yearOfBirth, address, statusId, roleId } =
+      createUserDto;
 
     const user = new this.userModel({
       username,
@@ -45,6 +45,7 @@ export class UserService {
       status: statusId,
       role: roleId,
     });
+
     const userSave = await user.save().catch((err) => {
       throw new BadRequestException('Username or email is existed');
     });
@@ -92,21 +93,36 @@ export class UserService {
         `id status: ${updateUserDto.statusId} not found`,
       );
 
-    user.password = updateUserDto.password;
-    user.email = updateUserDto.email;
-    user.name = updateUserDto.name;
-    user.yearOfBirth = updateUserDto.yearOfBirth;
-    user.address = updateUserDto.address;
-    user.status = status;
-    user.role = role;
+    const salt = await bcrypt.genSalt();
+    const hashpassword = this.hashPassword(updateUserDto.password, salt);
+    const { name, email, yearOfBirth, address } = updateUserDto;
 
-    const userSave = await user.save().catch((err) => {
-      throw new BadRequestException('Email already used');
-    });
-    return await this.userModel
-      .findById(userSave._id, { password: 0 })
+    const updatedUser = await this.userModel
+      .findByIdAndUpdate(
+        idUserDto.id,
+        { name, email, hashpassword, yearOfBirth, address, status, role },
+        { new: true, runValidators: true },
+      )
       .populate('role')
       .populate('status');
+
+    return updatedUser;
+
+    // user.password = updateUserDto.password;
+    // user.email = updateUserDto.email;
+    // user.name = updateUserDto.name;
+    // user.yearOfBirth = updateUserDto.yearOfBirth;
+    // user.address = updateUserDto.address;
+    // user.status = status;
+    // user.role = role;
+
+    // const userSave = await user.save().catch((err) => {
+    //   throw new BadRequestException('Email already used');
+    // });
+    // return await this.userModel
+    //   .findById(userSave._id, { password: 0 })
+    //   .populate('role')
+    //   .populate('status');
   }
 
   async removeUser(idUserDto: IdUserDto): Promise<string> {
