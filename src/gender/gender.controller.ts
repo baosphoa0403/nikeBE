@@ -8,34 +8,44 @@ import {
   Delete,
   UsePipes,
   ValidationPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { GenderService } from './gender.service';
 import { CreateGenderDto } from './dto/create-gender.dto';
 import { UpdateGenderDto } from './dto/update-gender.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { Gender } from './entities/gender.entity';
+import { JwtAuthGuard } from 'src/Guards/jwt-auth-guard';
+import { RolesGuard } from 'src/Guards/roles-guard';
+import { Roles } from 'src/Guards/roles.decorator';
+import { ListRole } from 'src/auth/role/role.enum';
 
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('gender')
 @ApiTags('Gender')
 export class GenderController {
   constructor(private readonly genderService: GenderService) {}
 
   @Post()
+  @Roles(ListRole.Admin, ListRole.User)
   create(@Body() createGenderDto: CreateGenderDto): Promise<Gender> {
     return this.genderService.create(createGenderDto);
   }
 
   @Get()
+  @Roles(ListRole.Admin)
   findAll(): Promise<Gender[]> {
     return this.genderService.findAll();
   }
 
   @Get(':id')
+  @Roles(ListRole.Admin, ListRole.User)
   findOne(@Param('id') id: string): Promise<Gender> {
     return this.genderService.findOne(id);
   }
 
   @Patch(':id')
+  @Roles(ListRole.Admin, ListRole.User)
   update(
     @Param('id') id: string,
     @Body() updateGenderDto: UpdateGenderDto,
@@ -44,6 +54,7 @@ export class GenderController {
   }
 
   @Delete(':id')
+  @Roles(ListRole.Admin)
   remove(@Param('id') id: string): Promise<string> {
     return this.genderService.remove(id);
   }

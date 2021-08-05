@@ -9,10 +9,10 @@ import {
 import { ApiBody, ApiProperty, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { GetUser } from 'src/Decorator/decorator';
 import { LocalAuthGuard } from 'src/Guards/local-auth-guard';
+import { User } from 'src/user/entities/user.entity';
 import { JwtAuthGuard } from '../Guards/jwt-auth-guard';
 import { AuthService } from './auth.service';
 import { LoginDTO } from './dto/login.dto';
-import { Payload } from './role/payload';
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -30,7 +30,7 @@ export class AuthController {
     description: 'login user',
   })
   @ApiBody({ type: LoginDTO })
-  async login(@GetUser() payload: Payload) {
-    return this.authService.login(payload);
+  async login(@GetUser() data: User) {
+    return this.authService.login(data);
   }
 }
