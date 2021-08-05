@@ -9,6 +9,7 @@ import { Status, StatusSchema } from 'src/status/entities/status.entity';
 import { Color, ColorSchema } from 'src/color/entities/color.entity';
 import { Gender, GenderSchema } from 'src/gender/entities/gender.entity';
 import { ProductDetail, ProductDetailSchema } from './entities/product-detail.entity';
+import { Size, SizeSchema } from 'src/size/entities/size.entity';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { ProductDetail, ProductDetailSchema } from './entities/product-detail.en
       { name: Status.name, schema: StatusSchema },
       { name: Color.name, schema: ColorSchema },
       { name: Gender.name, schema: GenderSchema },
+      {name: Size.name, schema: SizeSchema}
     ]),
     forwardRef(() => StatusModule),
   ],

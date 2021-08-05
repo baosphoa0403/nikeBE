@@ -8,6 +8,4 @@ export class CreateStatusDto {
     type: String,
   })
   nameStatus: string;
-
-  listProduct: Status[];
 }

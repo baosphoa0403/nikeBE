@@ -15,6 +15,10 @@ export class CreateProductDetailDto{
     @ApiProperty({type:String})
     genderId: string;
 
+    @IsMongoId()
+    @ApiProperty({type:String})
+    sizeId: string;
+
     @IsNumber()
     @ApiProperty({type:Number})
     price: number;

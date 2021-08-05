@@ -45,11 +45,9 @@ export class StatusService {
   }
 
   async update(id: string, updateStatusDto: UpdateStatusDto): Promise<Status> {
-    const { idProduct, nameStatus } = updateStatusDto;
+    const { nameStatus } = updateStatusDto;
     const status = await this.statusModel.findById(id);
-    const product = await this.productService.findOne(idProduct);
     status.nameStatus = nameStatus;
-    status.listProduct.push(product);
     return await status.save();
   }
 
