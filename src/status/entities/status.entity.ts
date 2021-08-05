@@ -8,8 +8,5 @@ export type StatusDocument = Status & Document;
 export class Status {
   @Prop()
   nameStatus: string;
-
-  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product' }] })
-  listProduct: Product[];
 }
 export const StatusSchema = SchemaFactory.createForClass(Status);

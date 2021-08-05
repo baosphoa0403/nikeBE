@@ -9,9 +9,4 @@ export class UpdateStatusDto {
     type: String,
   })
   nameStatus: string;
-  @IsNotEmpty()
-  @ApiProperty({
-    type: String,
-  })
-  idProduct: string;
 }

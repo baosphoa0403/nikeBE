@@ -15,7 +15,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { IdUserDto } from './dto/id-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
-
+import { StatusEnum } from 'src/common/status.enum';
 @Injectable()
 export class UserService {
   constructor(
@@ -26,6 +26,14 @@ export class UserService {
 
   private async hashPassword(password: string, salt: string): Promise<string> {
     return bcrypt.hash(password, salt);
+  }
+
+  async findStatusWithName(name: string): Promise<Status> {
+    return await this.StatusModel.findOne({
+      nameStatus: name,
+    }).catch(() => {
+      throw new BadRequestException('something wrong');
+    });
   }
 
   async createUser(createUserDto: CreateUserDto): Promise<User> {
@@ -56,15 +64,21 @@ export class UserService {
   }
 
   async findAllUser(): Promise<User[]> {
+    const activeStatus = await this.findStatusWithName(StatusEnum.Active);
+
     return await this.userModel
-      .find({}, { password: 0 })
+      .find({ status: activeStatus }, { password: 0 })
       .populate('role')
-      .populate('status');
+      .populate('status')
+      .catch(() => {
+        throw new BadRequestException('some thing wrong');
+      });
   }
 
   async findOneUser(idUserDto: IdUserDto): Promise<User> {
+    const activeStatus = await this.findStatusWithName(StatusEnum.Active);
     const user = await this.userModel
-      .findById(idUserDto.id, { password: 0 })
+      .findOne({ _id: idUserDto.id, status: activeStatus }, { password: 0 })
       .populate('role')
       .populate('status');
 
@@ -107,31 +121,25 @@ export class UserService {
       .populate('status');
 
     return updatedUser;
-
-    // user.password = updateUserDto.password;
-    // user.email = updateUserDto.email;
-    // user.name = updateUserDto.name;
-    // user.yearOfBirth = updateUserDto.yearOfBirth;
-    // user.address = updateUserDto.address;
-    // user.status = status;
-    // user.role = role;
-
-    // const userSave = await user.save().catch((err) => {
-    //   throw new BadRequestException('Email already used');
-    // });
-    // return await this.userModel
-    //   .findById(userSave._id, { password: 0 })
-    //   .populate('role')
-    //   .populate('status');
   }
 
   async removeUser(idUserDto: IdUserDto): Promise<string> {
-    const user = await this.userModel.findById(idUserDto.id).populate('role');
-
+    const user = await this.findOneUser(idUserDto);
     if (!user)
       throw new NotFoundException(`id user: ${idUserDto.id} not found`);
+    const inActiveStatus = await this.findStatusWithName(StatusEnum.Inactive);
+    await this.userModel
+      .findByIdAndUpdate(
+        idUserDto.id,
+        {
+          status: inActiveStatus,
+        },
+        { new: true, runValidators: true },
+      )
+      .catch(() => {
+        throw new BadRequestException('some thing wrong');
+      });
 
-    await user.remove();
     return `delete user ${idUserDto.id} successfull`;
   }
 }
