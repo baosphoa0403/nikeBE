@@ -11,6 +11,7 @@ export declare class UserService {
     private StatusModel;
     constructor(userModel: Model<User>, roleModel: Model<Role>, StatusModel: Model<Status>);
     private hashPassword;
+    findStatusWithName(name: string): Promise<Status>;
     createUser(createUserDto: CreateUserDto): Promise<User>;
     findAllUser(): Promise<User[]>;
     findOneUser(idUserDto: IdUserDto): Promise<User>;

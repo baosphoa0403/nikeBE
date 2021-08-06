@@ -18,6 +18,11 @@ const gender_service_1 = require("./gender.service");
 const create_gender_dto_1 = require("./dto/create-gender.dto");
 const update_gender_dto_1 = require("./dto/update-gender.dto");
 const swagger_1 = require("@nestjs/swagger");
+const jwt_auth_guard_1 = require("../Guards/jwt-auth-guard");
+const roles_guard_1 = require("../Guards/roles-guard");
+const roles_decorator_1 = require("../Guards/roles.decorator");
+const role_enum_1 = require("../auth/role/role.enum");
+const metadata_1 = require("../Decorator/metadata");
 let GenderController = class GenderController {
     constructor(genderService) {
         this.genderService = genderService;
@@ -40,6 +45,7 @@ let GenderController = class GenderController {
 };
 __decorate([
     common_1.Post(),
+    roles_decorator_1.Roles(role_enum_1.ListRole.Admin),
     __param(0, common_1.Body()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_gender_dto_1.CreateGenderDto]),
@@ -47,12 +53,14 @@ __decorate([
 ], GenderController.prototype, "create", null);
 __decorate([
     common_1.Get(),
+    metadata_1.Public(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], GenderController.prototype, "findAll", null);
 __decorate([
     common_1.Get(':id'),
+    metadata_1.Public(),
     __param(0, common_1.Param('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
@@ -60,6 +68,7 @@ __decorate([
 ], GenderController.prototype, "findOne", null);
 __decorate([
     common_1.Patch(':id'),
+    roles_decorator_1.Roles(role_enum_1.ListRole.Admin),
     __param(0, common_1.Param('id')),
     __param(1, common_1.Body()),
     __metadata("design:type", Function),
@@ -68,12 +77,14 @@ __decorate([
 ], GenderController.prototype, "update", null);
 __decorate([
     common_1.Delete(':id'),
+    roles_decorator_1.Roles(role_enum_1.ListRole.Admin),
     __param(0, common_1.Param('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], GenderController.prototype, "remove", null);
 GenderController = __decorate([
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
     common_1.Controller('gender'),
     swagger_1.ApiTags('Gender'),
     __metadata("design:paramtypes", [gender_service_1.GenderService])

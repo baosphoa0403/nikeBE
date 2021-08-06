@@ -62,7 +62,7 @@ __decorate([
 ], UserController.prototype, "create", null);
 __decorate([
     common_1.Get(),
-    roles_decorator_1.Roles(role_enum_1.Role.Admin),
+    roles_decorator_1.Roles(role_enum_1.ListRole.Admin),
     swagger_1.ApiResponse({
         status: 200,
         description: 'Get all User',
@@ -74,7 +74,7 @@ __decorate([
 ], UserController.prototype, "findAll", null);
 __decorate([
     common_1.Get('/detail'),
-    roles_decorator_1.Roles(role_enum_1.Role.Admin, role_enum_1.Role.User),
+    roles_decorator_1.Roles(role_enum_1.ListRole.Admin, role_enum_1.ListRole.User),
     swagger_1.ApiResponse({
         status: 200,
         description: 'Get a User by id',
@@ -87,7 +87,7 @@ __decorate([
 ], UserController.prototype, "findOne", null);
 __decorate([
     common_1.Patch('/update'),
-    roles_decorator_1.Roles(role_enum_1.Role.Admin, role_enum_1.Role.User),
+    roles_decorator_1.Roles(role_enum_1.ListRole.Admin, role_enum_1.ListRole.User),
     swagger_1.ApiResponse({
         status: 200,
         description: 'Update a User by id',
@@ -102,7 +102,7 @@ __decorate([
 ], UserController.prototype, "update", null);
 __decorate([
     common_1.Delete(':id'),
-    roles_decorator_1.Roles(role_enum_1.Role.Admin),
+    roles_decorator_1.Roles(role_enum_1.ListRole.Admin),
     swagger_1.ApiResponse({
         status: 200,
         description: 'Delete a User by id',

@@ -15,6 +15,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ColorController = void 0;
 const common_1 = require("@nestjs/common");
 const swagger_1 = require("@nestjs/swagger");
+const role_enum_1 = require("../auth/role/role.enum");
+const metadata_1 = require("../Decorator/metadata");
+const jwt_auth_guard_1 = require("../Guards/jwt-auth-guard");
+const roles_guard_1 = require("../Guards/roles-guard");
+const roles_decorator_1 = require("../Guards/roles.decorator");
 const color_service_1 = require("./color.service");
 const create_color_dto_1 = require("./dto/create-color.dto");
 const update_color_dto_1 = require("./dto/update-color.dto");
@@ -40,6 +45,7 @@ let ColorController = class ColorController {
 };
 __decorate([
     common_1.Post(),
+    roles_decorator_1.Roles(role_enum_1.ListRole.Admin),
     common_1.UsePipes(common_1.ValidationPipe),
     __param(0, common_1.Body()),
     __metadata("design:type", Function),
@@ -48,12 +54,14 @@ __decorate([
 ], ColorController.prototype, "create", null);
 __decorate([
     common_1.Get(),
+    metadata_1.Public(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], ColorController.prototype, "findAll", null);
 __decorate([
     common_1.Get(':id'),
+    metadata_1.Public(),
     __param(0, common_1.Param('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
@@ -61,6 +69,7 @@ __decorate([
 ], ColorController.prototype, "findOne", null);
 __decorate([
     common_1.Patch(':id'),
+    roles_decorator_1.Roles(role_enum_1.ListRole.Admin),
     __param(0, common_1.Param('id')),
     __param(1, common_1.Body()),
     __metadata("design:type", Function),
@@ -69,12 +78,14 @@ __decorate([
 ], ColorController.prototype, "update", null);
 __decorate([
     common_1.Delete(':id'),
+    roles_decorator_1.Roles(role_enum_1.ListRole.Admin),
     __param(0, common_1.Param('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], ColorController.prototype, "remove", null);
 ColorController = __decorate([
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
     common_1.Controller('color'),
     swagger_1.ApiTags('Color'),
     __metadata("design:paramtypes", [color_service_1.ColorService])

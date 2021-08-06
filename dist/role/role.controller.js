@@ -15,6 +15,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.RoleController = void 0;
 const common_1 = require("@nestjs/common");
 const swagger_1 = require("@nestjs/swagger");
+const role_enum_1 = require("../auth/role/role.enum");
+const metadata_1 = require("../Decorator/metadata");
+const jwt_auth_guard_1 = require("../Guards/jwt-auth-guard");
+const roles_guard_1 = require("../Guards/roles-guard");
+const roles_decorator_1 = require("../Guards/roles.decorator");
 const create_role_dto_1 = require("./dto/create-role.dto");
 const id_role_dto_1 = require("./dto/id-role.dto");
 const update_role_dto_1 = require("./dto/update-role.dto");
@@ -42,6 +47,7 @@ let RoleController = class RoleController {
 };
 __decorate([
     common_1.Post(),
+    roles_decorator_1.Roles(role_enum_1.ListRole.Admin),
     swagger_1.ApiResponse({
         status: 201,
         description: 'Created successfully role',
@@ -54,6 +60,7 @@ __decorate([
 ], RoleController.prototype, "createRole", null);
 __decorate([
     common_1.Get(),
+    metadata_1.Public(),
     swagger_1.ApiResponse({
         status: 200,
         description: 'Get all Role',
@@ -65,6 +72,7 @@ __decorate([
 ], RoleController.prototype, "findAllRoles", null);
 __decorate([
     common_1.Get(':id'),
+    metadata_1.Public(),
     swagger_1.ApiResponse({
         status: 200,
         description: 'Get detail a Role',
@@ -77,6 +85,7 @@ __decorate([
 ], RoleController.prototype, "findOneRole", null);
 __decorate([
     common_1.Patch(':id'),
+    roles_decorator_1.Roles(role_enum_1.ListRole.Admin),
     swagger_1.ApiResponse({
         status: 200,
         description: 'Update a Role by id',
@@ -91,6 +100,7 @@ __decorate([
 ], RoleController.prototype, "updateRole", null);
 __decorate([
     common_1.Delete(':id'),
+    roles_decorator_1.Roles(role_enum_1.ListRole.Admin),
     swagger_1.ApiResponse({
         status: 200,
         description: 'Delete a Role by id',
@@ -102,6 +112,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], RoleController.prototype, "deleteRole", null);
 RoleController = __decorate([
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
     common_1.Controller('role'),
     swagger_1.ApiTags('Role'),
     __metadata("design:paramtypes", [role_service_1.RoleService])

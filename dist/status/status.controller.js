@@ -19,6 +19,11 @@ const create_status_dto_1 = require("./dto/create-status.dto");
 const update_status_dto_1 = require("./dto/update-status.dto");
 const swagger_1 = require("@nestjs/swagger");
 const status_entity_1 = require("./entities/status.entity");
+const roles_decorator_1 = require("../Guards/roles.decorator");
+const jwt_auth_guard_1 = require("../Guards/jwt-auth-guard");
+const roles_guard_1 = require("../Guards/roles-guard");
+const role_enum_1 = require("../auth/role/role.enum");
+const metadata_1 = require("../Decorator/metadata");
 let StatusController = class StatusController {
     constructor(statusService) {
         this.statusService = statusService;
@@ -41,6 +46,7 @@ let StatusController = class StatusController {
 };
 __decorate([
     common_1.Post(),
+    roles_decorator_1.Roles(role_enum_1.ListRole.Admin),
     swagger_1.ApiCreatedResponse({
         status: 201,
         description: 'Created  status',
@@ -53,6 +59,7 @@ __decorate([
 ], StatusController.prototype, "create", null);
 __decorate([
     common_1.Get(),
+    metadata_1.Public(),
     swagger_1.ApiOkResponse({
         status: 200,
         description: 'Get All  status',
@@ -64,6 +71,7 @@ __decorate([
 ], StatusController.prototype, "findAll", null);
 __decorate([
     common_1.Get(':id'),
+    metadata_1.Public(),
     swagger_1.ApiOkResponse({
         status: 201,
         description: 'Get ID  status',
@@ -81,6 +89,7 @@ __decorate([
         type: String,
     }),
     common_1.Patch(':id'),
+    roles_decorator_1.Roles(role_enum_1.ListRole.Admin),
     __param(0, common_1.Param('id')),
     __param(1, common_1.Body()),
     __metadata("design:type", Function),
@@ -94,12 +103,14 @@ __decorate([
         type: String,
     }),
     common_1.Delete(':id'),
+    roles_decorator_1.Roles(role_enum_1.ListRole.Admin),
     __param(0, common_1.Param('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], StatusController.prototype, "remove", null);
 StatusController = __decorate([
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
     common_1.Controller('status'),
     swagger_1.ApiTags('Status'),
     __metadata("design:paramtypes", [status_service_1.StatusService])

@@ -17,10 +17,10 @@ const common_1 = require("@nestjs/common");
 const swagger_1 = require("@nestjs/swagger");
 const decorator_1 = require("../Decorator/decorator");
 const local_auth_guard_1 = require("../Guards/local-auth-guard");
+const user_entity_1 = require("../user/entities/user.entity");
 const jwt_auth_guard_1 = require("../Guards/jwt-auth-guard");
 const auth_service_1 = require("./auth.service");
 const login_dto_1 = require("./dto/login.dto");
-const payload_1 = require("./role/payload");
 let AuthController = class AuthController {
     constructor(authService) {
         this.authService = authService;
@@ -28,8 +28,8 @@ let AuthController = class AuthController {
     getProfile(req) {
         return req.user;
     }
-    async login(payload) {
-        return this.authService.login(payload);
+    async login(data) {
+        return this.authService.login(data);
     }
 };
 __decorate([
@@ -50,7 +50,7 @@ __decorate([
     swagger_1.ApiBody({ type: login_dto_1.LoginDTO }),
     __param(0, decorator_1.GetUser()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [payload_1.Payload]),
+    __metadata("design:paramtypes", [user_entity_1.User]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "login", null);
 AuthController = __decorate([

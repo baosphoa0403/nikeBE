@@ -45,11 +45,9 @@ let StatusService = class StatusService {
         return status;
     }
     async update(id, updateStatusDto) {
-        const { idProduct, nameStatus } = updateStatusDto;
+        const { nameStatus } = updateStatusDto;
         const status = await this.statusModel.findById(id);
-        const product = await this.productService.findOne(idProduct);
         status.nameStatus = nameStatus;
-        status.listProduct.push(product);
         return await status.save();
     }
     async remove(id) {

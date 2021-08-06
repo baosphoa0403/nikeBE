@@ -30,6 +30,11 @@ __decorate([
     __metadata("design:type", String)
 ], CreateProductDetailDto.prototype, "genderId", void 0);
 __decorate([
+    class_validator_1.IsMongoId(),
+    swagger_1.ApiProperty({ type: String }),
+    __metadata("design:type", String)
+], CreateProductDetailDto.prototype, "sizeId", void 0);
+__decorate([
     class_validator_1.IsNumber(),
     swagger_1.ApiProperty({ type: Number }),
     __metadata("design:type", Number)

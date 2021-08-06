@@ -18,6 +18,11 @@ const size_service_1 = require("./size.service");
 const create_size_dto_1 = require("./dto/create-size.dto");
 const update_size_dto_1 = require("./dto/update-size.dto");
 const swagger_1 = require("@nestjs/swagger");
+const jwt_auth_guard_1 = require("../Guards/jwt-auth-guard");
+const roles_guard_1 = require("../Guards/roles-guard");
+const roles_decorator_1 = require("../Guards/roles.decorator");
+const role_enum_1 = require("../auth/role/role.enum");
+const metadata_1 = require("../Decorator/metadata");
 let SizeController = class SizeController {
     constructor(sizeService) {
         this.sizeService = sizeService;
@@ -40,6 +45,7 @@ let SizeController = class SizeController {
 };
 __decorate([
     common_1.Post(),
+    roles_decorator_1.Roles(role_enum_1.ListRole.Admin),
     __param(0, common_1.Body()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_size_dto_1.CreateSizeDto]),
@@ -47,12 +53,14 @@ __decorate([
 ], SizeController.prototype, "create", null);
 __decorate([
     common_1.Get(),
+    metadata_1.Public(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], SizeController.prototype, "findAll", null);
 __decorate([
     common_1.Get(':id'),
+    metadata_1.Public(),
     __param(0, common_1.Param('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
@@ -60,6 +68,7 @@ __decorate([
 ], SizeController.prototype, "findOne", null);
 __decorate([
     common_1.Patch(':id'),
+    roles_decorator_1.Roles(role_enum_1.ListRole.Admin),
     __param(0, common_1.Param('id')),
     __param(1, common_1.Body()),
     __metadata("design:type", Function),
@@ -68,12 +77,14 @@ __decorate([
 ], SizeController.prototype, "update", null);
 __decorate([
     common_1.Delete(':id'),
+    roles_decorator_1.Roles(role_enum_1.ListRole.Admin),
     __param(0, common_1.Param('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], SizeController.prototype, "remove", null);
 SizeController = __decorate([
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
     common_1.Controller('size'),
     swagger_1.ApiTags('Size'),
     __metadata("design:paramtypes", [size_service_1.SizeService])

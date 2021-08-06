@@ -15,6 +15,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CategoryController = void 0;
 const common_1 = require("@nestjs/common");
 const swagger_1 = require("@nestjs/swagger");
+const role_enum_1 = require("../auth/role/role.enum");
+const metadata_1 = require("../Decorator/metadata");
+const jwt_auth_guard_1 = require("../Guards/jwt-auth-guard");
+const roles_guard_1 = require("../Guards/roles-guard");
+const roles_decorator_1 = require("../Guards/roles.decorator");
 const category_service_1 = require("./category.service");
 const create_category_dto_1 = require("./dto/create-category.dto");
 const update_category_dto_1 = require("./dto/update-category.dto");
@@ -42,6 +47,7 @@ let CategoryController = class CategoryController {
 };
 __decorate([
     common_1.Post(),
+    roles_decorator_1.Roles(role_enum_1.ListRole.Admin),
     swagger_1.ApiResponse({
         status: 201,
         description: 'Created successfully category',
@@ -54,6 +60,7 @@ __decorate([
 ], CategoryController.prototype, "create", null);
 __decorate([
     common_1.Get(),
+    metadata_1.Public(),
     swagger_1.ApiOkResponse({
         status: 200,
         description: 'Get Detail Category',
@@ -65,6 +72,7 @@ __decorate([
 ], CategoryController.prototype, "findAll", null);
 __decorate([
     common_1.Get(':id'),
+    metadata_1.Public(),
     swagger_1.ApiOkResponse({
         status: 200,
         description: 'Get Detail Category',
@@ -78,6 +86,7 @@ __decorate([
 ], CategoryController.prototype, "findOne", null);
 __decorate([
     common_1.Patch(':id'),
+    roles_decorator_1.Roles(role_enum_1.ListRole.Admin),
     swagger_1.ApiAcceptedResponse({
         status: 200,
         description: 'Update Category',
@@ -91,6 +100,7 @@ __decorate([
 ], CategoryController.prototype, "update", null);
 __decorate([
     common_1.Delete(':id'),
+    roles_decorator_1.Roles(role_enum_1.ListRole.Admin),
     swagger_1.ApiOkResponse({
         status: 200,
         description: 'Remove Category',
@@ -102,6 +112,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], CategoryController.prototype, "remove", null);
 CategoryController = __decorate([
+    common_1.UseGuards(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
     common_1.Controller('category'),
     swagger_1.ApiTags('Category'),
     __metadata("design:paramtypes", [category_service_1.CategoryService])

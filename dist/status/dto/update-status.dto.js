@@ -21,12 +21,5 @@ __decorate([
     }),
     __metadata("design:type", String)
 ], UpdateStatusDto.prototype, "nameStatus", void 0);
-__decorate([
-    class_validator_1.IsNotEmpty(),
-    swagger_1.ApiProperty({
-        type: String,
-    }),
-    __metadata("design:type", String)
-], UpdateStatusDto.prototype, "idProduct", void 0);
 exports.UpdateStatusDto = UpdateStatusDto;
 //# sourceMappingURL=update-status.dto.js.map

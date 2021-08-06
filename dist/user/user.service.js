@@ -21,6 +21,7 @@ const id_role_dto_1 = require("../role/dto/id-role.dto");
 const role_entity_1 = require("../role/entities/role.entity");
 const status_entity_1 = require("../status/entities/status.entity");
 const user_entity_1 = require("./entities/user.entity");
+const status_enum_1 = require("../common/status.enum");
 let UserService = class UserService {
     constructor(userModel, roleModel, StatusModel) {
         this.userModel = userModel;
@@ -29,6 +30,13 @@ let UserService = class UserService {
     }
     async hashPassword(password, salt) {
         return bcrypt.hash(password, salt);
+    }
+    async findStatusWithName(name) {
+        return await this.StatusModel.findOne({
+            nameStatus: name,
+        }).catch(() => {
+            throw new common_1.BadRequestException('something wrong');
+        });
     }
     async createUser(createUserDto) {
         const salt = await bcrypt.genSalt();
@@ -53,14 +61,19 @@ let UserService = class UserService {
             .populate('status');
     }
     async findAllUser() {
+        const activeStatus = await this.findStatusWithName(status_enum_1.StatusEnum.Active);
         return await this.userModel
-            .find({}, { password: 0 })
+            .find({ status: activeStatus }, { password: 0 })
             .populate('role')
-            .populate('status');
+            .populate('status')
+            .catch(() => {
+            throw new common_1.BadRequestException('some thing wrong');
+        });
     }
     async findOneUser(idUserDto) {
+        const activeStatus = await this.findStatusWithName(status_enum_1.StatusEnum.Active);
         const user = await this.userModel
-            .findById(idUserDto.id, { password: 0 })
+            .findOne({ _id: idUserDto.id, status: activeStatus }, { password: 0 })
             .populate('role')
             .populate('status');
         if (!user)
@@ -90,10 +103,17 @@ let UserService = class UserService {
         return updatedUser;
     }
     async removeUser(idUserDto) {
-        const user = await this.userModel.findById(idUserDto.id).populate('role');
+        const user = await this.findOneUser(idUserDto);
         if (!user)
             throw new common_1.NotFoundException(`id user: ${idUserDto.id} not found`);
-        await user.remove();
+        const inActiveStatus = await this.findStatusWithName(status_enum_1.StatusEnum.Inactive);
+        await this.userModel
+            .findByIdAndUpdate(idUserDto.id, {
+            status: inActiveStatus,
+        }, { new: true, runValidators: true })
+            .catch(() => {
+            throw new common_1.BadRequestException('some thing wrong');
+        });
         return `delete user ${idUserDto.id} successfull`;
     }
 };
