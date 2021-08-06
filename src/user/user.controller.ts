@@ -18,7 +18,7 @@ import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/Guards/jwt-auth-guard';
 import { RolesGuard } from 'src/Guards/roles-guard';
 import { Roles } from 'src/Guards/roles.decorator';
-import { Role } from 'src/auth/role/role.enum';
+import { ListRole } from 'src/auth/role/role.enum';
 import { Public } from 'src/Decorator/metadata';
 import { GetUser } from 'src/Decorator/decorator';
 import { Payload } from 'src/auth/role/payload';
@@ -41,7 +41,7 @@ export class UserController {
   }
 
   @Get()
-  @Roles(Role.Admin)
+  @Roles(ListRole.Admin)
   @ApiResponse({
     status: 200,
     description: 'Get all User',
@@ -52,7 +52,7 @@ export class UserController {
   }
 
   @Get('/detail')
-  @Roles(Role.Admin, Role.User)
+  @Roles(ListRole.Admin, ListRole.User)
   @ApiResponse({
     status: 200,
     description: 'Get a User by id',
@@ -63,7 +63,7 @@ export class UserController {
   }
 
   @Patch('/update')
-  @Roles(Role.Admin, Role.User)
+  @Roles(ListRole.Admin, ListRole.User)
   @ApiResponse({
     status: 200,
     description: 'Update a User by id',
@@ -77,7 +77,7 @@ export class UserController {
   }
 
   @Delete(':id')
-  @Roles(Role.Admin)
+  @Roles(ListRole.Admin)
   @ApiResponse({
     status: 200,
     description: 'Delete a User by id',
