@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiAcceptedResponse,
@@ -14,17 +15,24 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { ListRole } from 'src/auth/role/role.enum';
+import { Public } from 'src/Decorator/metadata';
+import { JwtAuthGuard } from 'src/Guards/jwt-auth-guard';
+import { RolesGuard } from 'src/Guards/roles-guard';
+import { Roles } from 'src/Guards/roles.decorator';
 import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { Category } from './entities/category.entity';
 
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('category')
 @ApiTags('Category')
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
   @Post()
+  @Roles(ListRole.Admin)
   @ApiResponse({
     status: 201,
     description: 'Created successfully category',
@@ -35,6 +43,7 @@ export class CategoryController {
   }
 
   @Get()
+  @Public()
   @ApiOkResponse({
     status: 200,
     description: 'Get Detail Category',
@@ -45,6 +54,7 @@ export class CategoryController {
   }
 
   @Get(':id')
+  @Public()
   @ApiOkResponse({
     status: 200,
     description: 'Get Detail Category',
@@ -57,6 +67,7 @@ export class CategoryController {
   }
 
   @Patch(':id')
+  @Roles(ListRole.Admin)
   @ApiAcceptedResponse({
     status: 200,
     description: 'Update Category',
@@ -70,6 +81,7 @@ export class CategoryController {
   }
 
   @Delete(':id')
+  @Roles(ListRole.Admin)
   @ApiOkResponse({
     status: 200,
     description: 'Remove Category',

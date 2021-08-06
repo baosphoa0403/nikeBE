@@ -17,6 +17,7 @@ import { Roles } from 'src/Guards/roles.decorator';
 import { JwtAuthGuard } from 'src/Guards/jwt-auth-guard';
 import { RolesGuard } from 'src/Guards/roles-guard';
 import { ListRole } from 'src/auth/role/role.enum';
+import { Public } from 'src/Decorator/metadata';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('status')
@@ -36,7 +37,7 @@ export class StatusController {
   }
 
   @Get()
-  @Roles(ListRole.Admin)
+  @Public()
   @ApiOkResponse({
     status: 200,
     description: 'Get All  status',
@@ -47,7 +48,7 @@ export class StatusController {
   }
 
   @Get(':id')
-  @Roles(ListRole.Admin)
+  @Public()
   @ApiOkResponse({
     status: 201,
     description: 'Get ID  status',

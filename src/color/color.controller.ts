@@ -35,6 +35,7 @@ export class ColorController {
   }
 
   @Get()
+  @Public()
   findAll(): Promise<Color[]> {
     return this.colorService.findAll();
   }
@@ -46,7 +47,6 @@ export class ColorController {
   }
 
   @Patch(':id')
-  @Public()
   @Roles(ListRole.Admin)
   update(
     @Param('id') id: string,

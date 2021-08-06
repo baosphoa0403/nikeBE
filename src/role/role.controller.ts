@@ -10,6 +10,7 @@ import {
 } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ListRole } from 'src/auth/role/role.enum';
+import { Public } from 'src/Decorator/metadata';
 import { JwtAuthGuard } from 'src/Guards/jwt-auth-guard';
 import { RolesGuard } from 'src/Guards/roles-guard';
 import { Roles } from 'src/Guards/roles.decorator';
@@ -37,7 +38,7 @@ export class RoleController {
   }
 
   @Get()
-  @Roles(ListRole.Admin)
+  @Public()
   @ApiResponse({
     status: 200,
     description: 'Get all Role',
@@ -48,7 +49,7 @@ export class RoleController {
   }
 
   @Get(':id')
-  @Roles(ListRole.Admin)
+  @Public()
   @ApiResponse({
     status: 200,
     description: 'Get detail a Role',

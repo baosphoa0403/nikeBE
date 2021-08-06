@@ -19,6 +19,7 @@ import { JwtAuthGuard } from 'src/Guards/jwt-auth-guard';
 import { RolesGuard } from 'src/Guards/roles-guard';
 import { Roles } from 'src/Guards/roles.decorator';
 import { ListRole } from 'src/auth/role/role.enum';
+import { Public } from 'src/Decorator/metadata';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('gender')
@@ -27,25 +28,25 @@ export class GenderController {
   constructor(private readonly genderService: GenderService) {}
 
   @Post()
-  @Roles(ListRole.Admin, ListRole.User)
+  @Roles(ListRole.Admin)
   create(@Body() createGenderDto: CreateGenderDto): Promise<Gender> {
     return this.genderService.create(createGenderDto);
   }
 
   @Get()
-  @Roles(ListRole.Admin)
+  @Public()
   findAll(): Promise<Gender[]> {
     return this.genderService.findAll();
   }
 
   @Get(':id')
-  @Roles(ListRole.Admin, ListRole.User)
+  @Public()
   findOne(@Param('id') id: string): Promise<Gender> {
     return this.genderService.findOne(id);
   }
 
   @Patch(':id')
-  @Roles(ListRole.Admin, ListRole.User)
+  @Roles(ListRole.Admin)
   update(
     @Param('id') id: string,
     @Body() updateGenderDto: UpdateGenderDto,
