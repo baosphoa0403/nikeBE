@@ -27,7 +27,13 @@ export class AuthService {
       userId: user._id,
       roleName: user.role.nameRole || '',
     };
+    const info = {
+      id: user._id,
+      username: user.username,
+      role: user.role.nameRole
+    }
     return {
+      info,
       access_token: this.jwtService.sign(payload),
       message: 'login successfully',
     };

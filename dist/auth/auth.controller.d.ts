@@ -5,6 +5,11 @@ export declare class AuthController {
     constructor(authService: AuthService);
     getProfile(req: any): any;
     login(data: User): Promise<{
+        info: {
+            id: any;
+            username: any;
+            role: any;
+        };
         access_token: string;
         message: string;
     }>;

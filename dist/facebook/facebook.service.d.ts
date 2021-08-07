@@ -6,6 +6,11 @@ export declare class FacebookService {
     private authService;
     constructor(usersService: UserService, authService: AuthService);
     loginFacebook(req: any): Promise<{
+        info: {
+            id: any;
+            username: any;
+            role: any;
+        };
         access_token: string;
         message: string;
     } | {

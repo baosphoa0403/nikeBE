@@ -4,6 +4,11 @@ export declare class GoogleController {
     constructor(googleService: GoogleService);
     googleAuth(req: any): Promise<void>;
     googleAuthRedirect(req: any): Promise<{
+        info: {
+            id: any;
+            username: any;
+            role: any;
+        };
         access_token: string;
         message: string;
     } | {

@@ -6,6 +6,11 @@ export declare class GoogleService {
     private authService;
     constructor(userService: UserService, authService: AuthService);
     googleLogin(req: any): Promise<{
+        info: {
+            id: any;
+            username: any;
+            role: any;
+        };
         access_token: string;
         message: string;
     } | {
