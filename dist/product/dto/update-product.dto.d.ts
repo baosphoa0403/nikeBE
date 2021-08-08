@@ -3,5 +3,6 @@ declare const UpdateProductDto_base: import("@nestjs/mapped-types").MappedType<P
 export declare class UpdateProductDto extends UpdateProductDto_base {
     name: string;
     categoryId: string;
+    createDate: Date;
 }
 export {};

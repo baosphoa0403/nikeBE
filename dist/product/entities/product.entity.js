@@ -23,6 +23,10 @@ __decorate([
     mongoose_1.Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Category' }),
     __metadata("design:type", category_entity_1.Category)
 ], Product.prototype, "category", void 0);
+__decorate([
+    mongoose_1.Prop(),
+    __metadata("design:type", Date)
+], Product.prototype, "createDate", void 0);
 Product = __decorate([
     mongoose_1.Schema()
 ], Product);

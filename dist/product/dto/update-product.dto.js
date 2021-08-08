@@ -27,5 +27,10 @@ __decorate([
     swagger_1.ApiProperty({ type: String }),
     __metadata("design:type", String)
 ], UpdateProductDto.prototype, "categoryId", void 0);
+__decorate([
+    class_validator_1.IsDateString(),
+    swagger_1.ApiProperty({ type: Date }),
+    __metadata("design:type", Date)
+], UpdateProductDto.prototype, "createDate", void 0);
 exports.UpdateProductDto = UpdateProductDto;
 //# sourceMappingURL=update-product.dto.js.map
