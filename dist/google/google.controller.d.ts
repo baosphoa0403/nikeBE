@@ -2,8 +2,7 @@ import { GoogleService } from './google.service';
 export declare class GoogleController {
     private readonly googleService;
     constructor(googleService: GoogleService);
-    googleAuth(req: any): Promise<void>;
-    googleAuthRedirect(req: any): Promise<{
+    checkTotkenId(tokenId: any): Promise<{
         info: {
             id: any;
             username: any;
@@ -12,7 +11,10 @@ export declare class GoogleController {
         access_token: string;
         message: string;
     } | {
-        data: any;
+        data: {
+            email: string;
+            name: string;
+        };
         statusCode: import("@nestjs/common").HttpStatus;
     }>;
 }

@@ -1,9 +1,7 @@
 import { BadRequestException, HttpStatus, Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
 import { AuthService } from 'src/auth/auth.service';
-import { User } from 'src/user/entities/user.entity';
 import { UserService } from 'src/user/user.service';
+import { OAuth2Client, TokenPayload } from 'google-auth-library';
 
 @Injectable()
 export class GoogleService {
@@ -12,17 +10,34 @@ export class GoogleService {
     private authService: AuthService,
   ) {}
 
-  async googleLogin(req) {
-    if (!req.user) {
-      throw new BadRequestException();
+  async googleLogin(tokenId) {
+    const payload: TokenPayload = await this.verifyToken(tokenId);
+
+    if (!payload.email_verified) {
+      throw new BadRequestException('Email not already verify');
     }
-    const user = await this.userService.findUserByEmail(req.user.email);
+
+    const user = await this.userService.findUserByEmail(payload.email);
     if (user == null) {
+      const data = {
+        email: payload.email,
+        name: payload.name,
+      };
       return {
-          data: req.user,
-          statusCode: HttpStatus.PERMANENT_REDIRECT,
+        data: data,
+        statusCode: HttpStatus.PERMANENT_REDIRECT,
       };
     }
     return this.authService.login(user);
+  }
+
+  async verifyToken(tokenId) {
+    const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+    const ticket = await client.verifyIdToken({
+      idToken: tokenId,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+    const payload = ticket.getPayload();
+    return payload;
   }
 }
