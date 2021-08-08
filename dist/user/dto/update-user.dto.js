@@ -32,8 +32,8 @@ __decorate([
 ], UpdateUserDto.prototype, "name", void 0);
 __decorate([
     class_validator_1.IsDateString(),
-    swagger_1.ApiProperty({ type: Date }),
-    __metadata("design:type", Date)
+    swagger_1.ApiProperty({ type: Number }),
+    __metadata("design:type", Number)
 ], UpdateUserDto.prototype, "yearOfBirth", void 0);
 __decorate([
     swagger_1.ApiProperty({ type: String }),

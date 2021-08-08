@@ -7,8 +7,10 @@ export class Product {
   @Prop()
   name: string;
 
-  @Prop({type: mongoose.Schema.Types.ObjectId, ref: 'Category'})
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Category' })
   category: Category;
 
+  @Prop()
+  createDate: Date;
 }
 export const ProductSchema = SchemaFactory.createForClass(Product);
