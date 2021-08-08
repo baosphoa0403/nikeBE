@@ -7,7 +7,7 @@ export declare class User {
     password: string;
     email: string;
     name: string;
-    yearOfBirth: Date;
+    yearOfBirth: number;
     address: string;
     status: Status;
     role: Role;

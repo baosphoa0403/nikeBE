@@ -34,7 +34,7 @@ __decorate([
 ], User.prototype, "name", void 0);
 __decorate([
     mongoose_1.Prop(),
-    __metadata("design:type", Date)
+    __metadata("design:type", Number)
 ], User.prototype, "yearOfBirth", void 0);
 __decorate([
     mongoose_1.Prop(),

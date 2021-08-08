@@ -36,9 +36,9 @@ __decorate([
     __metadata("design:type", String)
 ], CreateUserDto.prototype, "name", void 0);
 __decorate([
-    class_validator_1.IsDateString(),
-    swagger_1.ApiProperty({ type: Date }),
-    __metadata("design:type", Date)
+    class_validator_1.IsInt(),
+    swagger_1.ApiProperty({ type: Number }),
+    __metadata("design:type", Number)
 ], CreateUserDto.prototype, "yearOfBirth", void 0);
 __decorate([
     swagger_1.ApiProperty({ type: String }),
