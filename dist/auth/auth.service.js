@@ -36,9 +36,10 @@ let AuthService = class AuthService {
         const info = {
             id: user._id,
             username: user.username,
-            role: user.role.nameRole
+            role: user.role.nameRole,
         };
         return {
+            statusCode: common_1.HttpStatus.OK,
             info,
             access_token: this.jwtService.sign(payload),
             message: 'login successfully',

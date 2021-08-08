@@ -5,6 +5,7 @@ export declare class AuthController {
     constructor(authService: AuthService);
     getProfile(req: any): any;
     login(data: User): Promise<{
+        statusCode: import("@nestjs/common").HttpStatus;
         info: {
             id: any;
             username: any;

@@ -6,6 +6,7 @@ export declare class FacebookService {
     private authService;
     constructor(usersService: UserService, authService: AuthService);
     loginFacebook(req: any): Promise<{
+        statusCode: HttpStatus;
         info: {
             id: any;
             username: any;

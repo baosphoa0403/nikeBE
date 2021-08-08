@@ -20,7 +20,7 @@ let GoogleStrategy = class GoogleStrategy extends passport_1.PassportStrategy(pa
         super({
             clientID: process.env.GOOGLE_CLIENT_ID,
             clientSecret: process.env.GOOGLE_SECRET,
-            callbackURL: 'http://localhost:3000/google/redirect',
+            callbackURL: 'https://management-shoes.herokuapp.com/google/redirect',
             scope: ['email', 'profile'],
         });
     }
@@ -28,8 +28,8 @@ let GoogleStrategy = class GoogleStrategy extends passport_1.PassportStrategy(pa
         const { name, emails, photos } = profile;
         const user = {
             email: emails[0].value,
-            name: `${name.givenName ? name.givenName : ""} ${name.familyName ? name.familyName : ""}`,
-            accessToken
+            name: `${name.givenName ? name.givenName : ''} ${name.familyName ? name.familyName : ''}`,
+            accessToken,
         };
         done(null, user);
     }

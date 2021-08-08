@@ -7,6 +7,7 @@ export declare class GoogleService {
     private authService;
     constructor(userService: UserService, authService: AuthService);
     googleLogin(tokenId: any): Promise<{
+        statusCode: HttpStatus;
         info: {
             id: any;
             username: any;

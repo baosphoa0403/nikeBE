@@ -2,7 +2,8 @@ import { GoogleService } from './google.service';
 export declare class GoogleController {
     private readonly googleService;
     constructor(googleService: GoogleService);
-    checkTotkenId(tokenId: any): Promise<{
+    checkTotkenId(tokenId: string): Promise<{
+        statusCode: import("@nestjs/common").HttpStatus;
         info: {
             id: any;
             username: any;

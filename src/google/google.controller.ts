@@ -21,7 +21,7 @@ export class GoogleController {
     status: 200,
     description: 'login with google by send tokenId',
   })
-  checkTotkenId(@Param('tokenId') tokenId) {
+  checkTotkenId(@Param('tokenId') tokenId: string) {
     return this.googleService.googleLogin(tokenId);
   }
 }
