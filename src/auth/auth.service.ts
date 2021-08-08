@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { User } from 'src/user/entities/user.entity';
@@ -30,9 +30,10 @@ export class AuthService {
     const info = {
       id: user._id,
       username: user.username,
-      role: user.role.nameRole
-    }
+      role: user.role.nameRole,
+    };
     return {
+      statusCode: HttpStatus.OK,
       info,
       access_token: this.jwtService.sign(payload),
       message: 'login successfully',
