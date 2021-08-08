@@ -1,11 +1,12 @@
 import { HttpStatus } from '@nestjs/common';
 import { AuthService } from 'src/auth/auth.service';
 import { UserService } from 'src/user/user.service';
+import { TokenPayload } from 'google-auth-library';
 export declare class GoogleService {
     private userService;
     private authService;
     constructor(userService: UserService, authService: AuthService);
-    googleLogin(req: any): Promise<{
+    googleLogin(tokenId: any): Promise<{
         info: {
             id: any;
             username: any;
@@ -14,7 +15,11 @@ export declare class GoogleService {
         access_token: string;
         message: string;
     } | {
-        data: any;
+        data: {
+            email: string;
+            name: string;
+        };
         statusCode: HttpStatus;
     }>;
+    verifyToken(tokenId: any): Promise<TokenPayload>;
 }

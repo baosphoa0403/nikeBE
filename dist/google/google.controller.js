@@ -14,34 +14,27 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.GoogleController = void 0;
 const common_1 = require("@nestjs/common");
-const passport_1 = require("@nestjs/passport");
 const swagger_1 = require("@nestjs/swagger");
 const google_service_1 = require("./google.service");
 let GoogleController = class GoogleController {
     constructor(googleService) {
         this.googleService = googleService;
     }
-    async googleAuth(req) { }
-    googleAuthRedirect(req) {
-        return this.googleService.googleLogin(req);
+    checkTotkenId(tokenId) {
+        return this.googleService.googleLogin(tokenId);
     }
 };
 __decorate([
-    common_1.Get(),
-    common_1.UseGuards(passport_1.AuthGuard('google')),
-    __param(0, common_1.Req()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", Promise)
-], GoogleController.prototype, "googleAuth", null);
-__decorate([
-    common_1.Get('redirect'),
-    common_1.UseGuards(passport_1.AuthGuard('google')),
-    __param(0, common_1.Req()),
+    common_1.Get(':tokenId'),
+    swagger_1.ApiResponse({
+        status: 200,
+        description: 'login with google by send tokenId',
+    }),
+    __param(0, common_1.Param('tokenId')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
-], GoogleController.prototype, "googleAuthRedirect", null);
+], GoogleController.prototype, "checkTotkenId", null);
 GoogleController = __decorate([
     swagger_1.ApiTags('Google'),
     common_1.Controller('google'),

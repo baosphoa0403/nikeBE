@@ -12,25 +12,39 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.GoogleService = void 0;
 const common_1 = require("@nestjs/common");
 const auth_service_1 = require("../auth/auth.service");
-const user_entity_1 = require("../user/entities/user.entity");
 const user_service_1 = require("../user/user.service");
+const google_auth_library_1 = require("google-auth-library");
 let GoogleService = class GoogleService {
     constructor(userService, authService) {
         this.userService = userService;
         this.authService = authService;
     }
-    async googleLogin(req) {
-        if (!req.user) {
-            throw new common_1.BadRequestException();
+    async googleLogin(tokenId) {
+        const payload = await this.verifyToken(tokenId);
+        if (!payload.email_verified) {
+            throw new common_1.BadRequestException('Email not already verify');
         }
-        const user = await this.userService.findUserByEmail(req.user.email);
+        const user = await this.userService.findUserByEmail(payload.email);
         if (user == null) {
+            const data = {
+                email: payload.email,
+                name: payload.name,
+            };
             return {
-                data: req.user,
+                data: data,
                 statusCode: common_1.HttpStatus.PERMANENT_REDIRECT,
             };
         }
         return this.authService.login(user);
+    }
+    async verifyToken(tokenId) {
+        const client = new google_auth_library_1.OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+        const ticket = await client.verifyIdToken({
+            idToken: tokenId,
+            audience: process.env.GOOGLE_CLIENT_ID,
+        });
+        const payload = ticket.getPayload();
+        return payload;
     }
 };
 GoogleService = __decorate([
