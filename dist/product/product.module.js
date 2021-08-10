@@ -19,6 +19,8 @@ const color_entity_1 = require("../color/entities/color.entity");
 const gender_entity_1 = require("../gender/entities/gender.entity");
 const product_detail_entity_1 = require("./entities/product-detail.entity");
 const size_entity_1 = require("../size/entities/size.entity");
+const image_entity_1 = require("../image/entities/image.entity");
+const image_service_1 = require("../image/image.service");
 let ProductModule = class ProductModule {
 };
 ProductModule = __decorate([
@@ -31,12 +33,13 @@ ProductModule = __decorate([
                 { name: status_entity_1.Status.name, schema: status_entity_1.StatusSchema },
                 { name: color_entity_1.Color.name, schema: color_entity_1.ColorSchema },
                 { name: gender_entity_1.Gender.name, schema: gender_entity_1.GenderSchema },
-                { name: size_entity_1.Size.name, schema: size_entity_1.SizeSchema }
+                { name: size_entity_1.Size.name, schema: size_entity_1.SizeSchema },
+                { name: image_entity_1.Image.name, schema: image_entity_1.ImageSchema },
             ]),
             common_1.forwardRef(() => status_module_1.StatusModule),
         ],
         controllers: [product_controller_1.ProductController],
-        providers: [product_service_1.ProductService],
+        providers: [product_service_1.ProductService, image_service_1.ImageService],
         exports: [product_service_1.ProductService],
     })
 ], ProductModule);

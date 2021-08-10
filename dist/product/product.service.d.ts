@@ -2,6 +2,7 @@ import { Model } from 'mongoose';
 import { Category } from 'src/category/entities/category.entity';
 import { Color } from 'src/color/entities/color.entity';
 import { Gender } from 'src/gender/entities/gender.entity';
+import { Image } from 'src/image/entities/image.entity';
 import { Size } from 'src/size/entities/size.entity';
 import { Status } from 'src/status/entities/status.entity';
 import { CreateProductDetailDto } from './dto/create-product-detail.dto';
@@ -20,7 +21,8 @@ export declare class ProductService {
     private colorModel;
     private genderModel;
     private sizeModel;
-    constructor(productModel: Model<Product>, productDetailModel: Model<ProductDetail>, categoryModel: Model<Category>, statusModel: Model<Status>, colorModel: Model<Color>, genderModel: Model<Gender>, sizeModel: Model<Size>);
+    private imageModel;
+    constructor(productModel: Model<Product>, productDetailModel: Model<ProductDetail>, categoryModel: Model<Category>, statusModel: Model<Status>, colorModel: Model<Color>, genderModel: Model<Gender>, sizeModel: Model<Size>, imageModel: Model<Image>);
     findWithFilter(filter: ProductFilterDto): Promise<ProductResponse[]>;
     findStatusWithName(name: string): Promise<Status>;
     createProduct(createProductDto: CreateProductDto): Promise<Product>;
