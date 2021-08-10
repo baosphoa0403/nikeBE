@@ -22,6 +22,7 @@ const user_module_1 = require("./user/user.module");
 const google_module_1 = require("./google/google.module");
 const auth_module_1 = require("./auth/auth.module");
 const facebook_module_1 = require("./facebook/facebook.module");
+const code_module_1 = require("./code/code.module");
 const mongoose = require("mongoose");
 mongoose.set('useCreateIndex', true);
 let AppModule = class AppModule {
@@ -41,6 +42,7 @@ AppModule = __decorate([
             google_module_1.GoogleModule,
             auth_module_1.AuthModule,
             facebook_module_1.FacebookModule,
+            code_module_1.CodeModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],
