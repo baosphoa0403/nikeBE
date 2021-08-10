@@ -23,9 +23,13 @@ const id_product_dto_1 = require("./dto/id-product.dto");
 const product_detail_entity_1 = require("./entities/product-detail.entity");
 const update_product_detail_dto_1 = require("./dto/update-product-detail.dto");
 const id_product_detail_dto_1 = require("./dto/id-product-detail.dto");
+const product_filter_dto_1 = require("./dto/product-filter.dto");
 let ProductController = class ProductController {
     constructor(productService) {
         this.productService = productService;
+    }
+    filter(filter) {
+        return this.productService.findWithFilter(filter);
     }
     createProduct(createProductDto) {
         return this.productService.createProduct(createProductDto);
@@ -56,6 +60,13 @@ let ProductController = class ProductController {
     }
 };
 __decorate([
+    common_1.Get('filter'),
+    __param(0, common_1.Query()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [product_filter_dto_1.ProductFilterDto]),
+    __metadata("design:returntype", void 0)
+], ProductController.prototype, "filter", null);
+__decorate([
     common_1.Post(),
     swagger_1.ApiResponse({
         status: 201,
@@ -72,7 +83,7 @@ __decorate([
     swagger_1.ApiResponse({
         status: 201,
         description: 'Created successfully product detail',
-        type: product_detail_entity_1.ProductDetail
+        type: product_detail_entity_1.ProductDetail,
     }),
     __param(0, common_1.Param()),
     __param(1, common_1.Body()),
@@ -86,7 +97,7 @@ __decorate([
     swagger_1.ApiResponse({
         status: 200,
         description: 'get all Product',
-        type: [product_entity_1.Product]
+        type: [product_entity_1.Product],
     }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
@@ -97,7 +108,7 @@ __decorate([
     swagger_1.ApiResponse({
         status: 200,
         description: 'get all product detail for id product',
-        type: [product_detail_entity_1.ProductDetail]
+        type: [product_detail_entity_1.ProductDetail],
     }),
     __param(0, common_1.Param()),
     __metadata("design:type", Function),

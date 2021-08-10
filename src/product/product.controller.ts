@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -16,15 +17,21 @@ import { IdProductDto } from './dto/id-product.dto';
 import { ProductDetail } from './entities/product-detail.entity';
 import { UpdateProductDetailDto } from './dto/update-product-detail.dto';
 import { IdProductDetailDto } from './dto/id-product-detail.dto';
+import { ProductFilterDto } from './dto/product-filter.dto';
 
 @Controller('product')
 @ApiTags('Product')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
+  @Get('filter')
+  filter(@Query() filter: ProductFilterDto) {
+    return this.productService.findWithFilter(filter);
+  }
+
   @Post()
   @ApiResponse({
-    status:201,
+    status: 201,
     description: 'Created successfully product',
     type: Product,
   })
@@ -34,9 +41,9 @@ export class ProductController {
 
   @Post(':id/productDetail')
   @ApiResponse({
-    status:201,
+    status: 201,
     description: 'Created successfully product detail',
-    type: ProductDetail
+    type: ProductDetail,
   })
   insertProductDetail(
     @Param() idProductDto: IdProductDto,
@@ -50,9 +57,9 @@ export class ProductController {
 
   @Get()
   @ApiResponse({
-    status:200,
+    status: 200,
     description: 'get all Product',
-    type: [Product]
+    type: [Product],
   })
   getAllProduct(): Promise<Product[]> {
     return this.productService.getAllProduct();
@@ -62,7 +69,7 @@ export class ProductController {
   @ApiResponse({
     status: 200,
     description: 'get all product detail for id product',
-    type: [ProductDetail]
+    type: [ProductDetail],
   })
   getAllProductDetail(
     @Param() idProductDto: IdProductDto,
@@ -72,9 +79,9 @@ export class ProductController {
 
   @Get(':id')
   @ApiResponse({
-    status:200,
+    status: 200,
     description: 'Get a product for id',
-    type:Product,
+    type: Product,
   })
   getProduct(@Param() idProductDto: IdProductDto): Promise<Product> {
     return this.productService.findOne(idProductDto.id);
@@ -82,7 +89,7 @@ export class ProductController {
 
   @Patch(':id')
   @ApiResponse({
-    status:200,
+    status: 200,
     description: 'Update a product for id',
     type: Product,
   })
@@ -98,20 +105,23 @@ export class ProductController {
 
   @Patch('productDetail/:id')
   @ApiResponse({
-    status:200,
+    status: 200,
     description: 'Update a product detail for id productDetail',
     type: ProductDetail,
   })
   updateProductDetail(
     @Param() idProductDetailDto: IdProductDetailDto,
-    @Body() updateProductDetailDto: UpdateProductDetailDto
-    ):Promise<ProductDetail> {
-    return this.productService.updateProductDetail(idProductDetailDto.id, updateProductDetailDto);
+    @Body() updateProductDetailDto: UpdateProductDetailDto,
+  ): Promise<ProductDetail> {
+    return this.productService.updateProductDetail(
+      idProductDetailDto.id,
+      updateProductDetailDto,
+    );
   }
 
   @Delete(':id')
   @ApiResponse({
-    status:200,
+    status: 200,
     description: 'Delete a product for id Product',
     type: String,
   })
@@ -121,11 +131,13 @@ export class ProductController {
 
   @Delete('productDetail/:id')
   @ApiResponse({
-    status:200,
+    status: 200,
     description: 'Delete a product detail for id ProductDetail',
     type: String,
   })
-  deleteProductDetail(@Param() idProductDetailDto: IdProductDetailDto): Promise<string> {
+  deleteProductDetail(
+    @Param() idProductDetailDto: IdProductDetailDto,
+  ): Promise<string> {
     return this.productService.deleteProductDetail(idProductDetailDto.id);
   }
 }

@@ -13,10 +13,12 @@ import { Size } from 'src/size/entities/size.entity';
 import { Status } from 'src/status/entities/status.entity';
 import { CreateProductDetailDto } from './dto/create-product-detail.dto';
 import { CreateProductDto } from './dto/create-product.dto';
+import { ProductFilterDto } from './dto/product-filter.dto';
 import { UpdateProductDetailDto } from './dto/update-product-detail.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductDetail } from './entities/product-detail.entity';
 import { Product } from './entities/product.entity';
+import { ProductResponse } from './response/product';
 
 @Injectable()
 export class ProductService {
@@ -31,6 +33,64 @@ export class ProductService {
     @InjectModel(Size.name) private sizeModel: Model<Size>,
   ) {}
 
+  async findWithFilter(filter: ProductFilterDto) {
+    const activeStatus = await this.findStatusWithName(StatusEnum.Active);
+    // const products = await this.productModel.find({
+    //   name: new RegExp('.*' + filter.name ? filter.name : '' + '.*'),
+    // });
+    const products = await this.productModel.find({
+      name: {
+        $regex: new RegExp('.*' + filter.name ? filter.name : '' + '.*'),
+        $options: 'i',
+      },
+    });
+
+    const genders = filter.genderId
+      ? await this.genderModel.find({
+          _id: { $in: filter.genderId },
+        })
+      : await this.genderModel.find();
+
+    const colors = filter.colorId
+      ? await this.colorModel.find({ _id: { $in: filter.colorId } })
+      : await this.colorModel.find();
+
+    const sizes = filter.sizeId
+      ? await this.sizeModel.find({ _id: { $in: filter.sizeId } })
+      : await this.sizeModel.find();
+
+    const details = await this.productDetailModel
+      .find({
+        product: { $in: products },
+        gender: { $in: genders },
+        color: { $in: colors },
+        size: { $in: sizes },
+        quantity: { $gt: 0 },
+        status: activeStatus,
+      })
+      .populate('product')
+      .populate('gender')
+      .populate('size')
+      .populate('color');
+
+    const result: ProductResponse[] = [];
+    details.forEach((detail) => {
+      const tmp: ProductResponse = result.find(
+        (item) => item.product === detail.product,
+      );
+      if (tmp) {
+        tmp.details.push(detail.depopulate('product'));
+      } else {
+        result.push({
+          product: detail.product,
+          details: [detail.depopulate('product')],
+        });
+      }
+    });
+
+    return result;
+  }
+
   async findStatusWithName(name: string): Promise<Status> {
     return await this.statusModel
       .findOne({
@@ -42,11 +102,11 @@ export class ProductService {
   }
 
   async createProduct(createProductDto: CreateProductDto): Promise<Product> {
-    const { name, categoryId } = createProductDto;
+    const { name, categoryId, createDate } = createProductDto;
     const category = await this.categoryModel.findById(categoryId);
     if (!category) throw new NotFoundException('category not existed');
 
-    const product = new this.productModel({ name, category });
+    const product = new this.productModel({ name, category, createDate });
     return (await product.save()).populate('category');
   }
 
@@ -202,7 +262,7 @@ export class ProductService {
   async deleteProductDetail(idProductDetail: string): Promise<string> {
     const inActiveStatus = await this.findStatusWithName(StatusEnum.Inactive);
     const productDetail = await this.productDetailModel.findByIdAndUpdate(
-      {_id:idProductDetail },
+      { _id: idProductDetail },
       { status: inActiveStatus },
     );
 

@@ -6,10 +6,12 @@ import { Size } from 'src/size/entities/size.entity';
 import { Status } from 'src/status/entities/status.entity';
 import { CreateProductDetailDto } from './dto/create-product-detail.dto';
 import { CreateProductDto } from './dto/create-product.dto';
+import { ProductFilterDto } from './dto/product-filter.dto';
 import { UpdateProductDetailDto } from './dto/update-product-detail.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductDetail } from './entities/product-detail.entity';
 import { Product } from './entities/product.entity';
+import { ProductResponse } from './response/product';
 export declare class ProductService {
     private productModel;
     private productDetailModel;
@@ -19,6 +21,7 @@ export declare class ProductService {
     private genderModel;
     private sizeModel;
     constructor(productModel: Model<Product>, productDetailModel: Model<ProductDetail>, categoryModel: Model<Category>, statusModel: Model<Status>, colorModel: Model<Color>, genderModel: Model<Gender>, sizeModel: Model<Size>);
+    findWithFilter(filter: ProductFilterDto): Promise<ProductResponse[]>;
     findStatusWithName(name: string): Promise<Status>;
     createProduct(createProductDto: CreateProductDto): Promise<Product>;
     getAllProduct(): Promise<Product[]>;
