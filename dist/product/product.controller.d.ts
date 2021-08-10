@@ -6,9 +6,11 @@ import { IdProductDto } from './dto/id-product.dto';
 import { ProductDetail } from './entities/product-detail.entity';
 import { UpdateProductDetailDto } from './dto/update-product-detail.dto';
 import { IdProductDetailDto } from './dto/id-product-detail.dto';
+import { ProductFilterDto } from './dto/product-filter.dto';
 export declare class ProductController {
     private readonly productService;
     constructor(productService: ProductService);
+    filter(filter: ProductFilterDto): Promise<import("./response/product").ProductResponse[]>;
     createProduct(createProductDto: CreateProductDto): Promise<Product>;
     insertProductDetail(idProductDto: IdProductDto, updateProductDetailDto: UpdateProductDetailDto): Promise<ProductDetail>;
     getAllProduct(): Promise<Product[]>;

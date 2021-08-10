@@ -34,6 +34,53 @@ let ProductService = class ProductService {
         this.genderModel = genderModel;
         this.sizeModel = sizeModel;
     }
+    async findWithFilter(filter) {
+        const activeStatus = await this.findStatusWithName(status_enum_1.StatusEnum.Active);
+        const products = await this.productModel.find({
+            name: {
+                $regex: new RegExp('.*' + filter.name ? filter.name : '' + '.*'),
+                $options: 'i',
+            },
+        });
+        const genders = filter.genderId
+            ? await this.genderModel.find({
+                _id: { $in: filter.genderId },
+            })
+            : await this.genderModel.find();
+        const colors = filter.colorId
+            ? await this.colorModel.find({ _id: { $in: filter.colorId } })
+            : await this.colorModel.find();
+        const sizes = filter.sizeId
+            ? await this.sizeModel.find({ _id: { $in: filter.sizeId } })
+            : await this.sizeModel.find();
+        const details = await this.productDetailModel
+            .find({
+            product: { $in: products },
+            gender: { $in: genders },
+            color: { $in: colors },
+            size: { $in: sizes },
+            quantity: { $gt: 0 },
+            status: activeStatus,
+        })
+            .populate('product')
+            .populate('gender')
+            .populate('size')
+            .populate('color');
+        const result = [];
+        details.forEach((detail) => {
+            const tmp = result.find((item) => item.product === detail.product);
+            if (tmp) {
+                tmp.details.push(detail.depopulate('product'));
+            }
+            else {
+                result.push({
+                    product: detail.product,
+                    details: [detail.depopulate('product')],
+                });
+            }
+        });
+        return result;
+    }
     async findStatusWithName(name) {
         return await this.statusModel
             .findOne({
@@ -44,11 +91,11 @@ let ProductService = class ProductService {
         });
     }
     async createProduct(createProductDto) {
-        const { name, categoryId } = createProductDto;
+        const { name, categoryId, createDate } = createProductDto;
         const category = await this.categoryModel.findById(categoryId);
         if (!category)
             throw new common_1.NotFoundException('category not existed');
-        const product = new this.productModel({ name, category });
+        const product = new this.productModel({ name, category, createDate });
         return (await product.save()).populate('category');
     }
     async getAllProduct() {
