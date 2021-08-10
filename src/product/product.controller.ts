@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -23,8 +24,8 @@ import { ProductFilterDto } from './dto/product-filter.dto';
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
-  @Post('filter')
-  filter(@Body() filter: ProductFilterDto) {
+  @Get('filter')
+  filter(@Query() filter: ProductFilterDto) {
     return this.productService.findWithFilter(filter);
   }
 

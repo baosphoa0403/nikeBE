@@ -60,8 +60,8 @@ let ProductController = class ProductController {
     }
 };
 __decorate([
-    common_1.Post('filter'),
-    __param(0, common_1.Body()),
+    common_1.Get('filter'),
+    __param(0, common_1.Query()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [product_filter_dto_1.ProductFilterDto]),
     __metadata("design:returntype", void 0)
