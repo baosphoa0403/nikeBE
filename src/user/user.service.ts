@@ -16,6 +16,10 @@ import { IdUserDto } from './dto/id-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { StatusEnum } from 'src/common/status.enum';
+import { CreateUserProfileDto } from './dto/create-userProfile.dto';
+import { UpdateUserProfileDto } from './dto/update-user-profile.dto';
+import { HttpStatus } from '@nestjs/common';
+import { UpdatePassword } from './dto/update-password';
 @Injectable()
 export class UserService {
   constructor(
@@ -61,6 +65,44 @@ export class UserService {
       .findById(userSave._id, { password: 0 })
       .populate('role')
       .populate('status');
+  }
+
+  async createUserProfile(createUserDto: CreateUserProfileDto): Promise<User> {
+    const salt = await bcrypt.genSalt();
+    const password = await this.hashPassword(createUserDto.password, salt);
+    const statusActive = await this.StatusModel.findOne({nameStatus: "active"});
+    const roleUser = await this.roleModel.findOne({nameRole: "User"});
+    const { username, email, name, yearOfBirth, address} =
+      createUserDto;
+
+    const user = new this.userModel({
+      username,
+      password,
+      email,
+      name,
+      yearOfBirth,
+      address,
+      status: statusActive._id,
+      role: roleUser._id,
+    });
+
+    const userSave = await user.save().catch((err) => {
+      throw new BadRequestException('Username or email is existed');
+    });
+    return this.userModel
+      .findById(userSave._id, { password: 0 })
+      .populate('role')
+      .populate('status');
+  }
+
+  async updatePassword({password}: UpdatePassword, idUserDto: IdUserDto): Promise<{message: string, statusCode: number}>{
+    const salt = await bcrypt.genSalt();
+    const hashpassword = await this.hashPassword(password, salt);
+    await this.userModel.findByIdAndUpdate(idUserDto.id, {password: hashpassword})
+    return {
+      message: "update password successfully",
+      statusCode: HttpStatus.PERMANENT_REDIRECT
+    };
   }
 
   async findAllUser(): Promise<User[]> {
@@ -115,6 +157,27 @@ export class UserService {
       .findByIdAndUpdate(
         idUserDto.id,
         { name, email, hashpassword, yearOfBirth, address, status, role },
+        { new: true, runValidators: true },
+      )
+      .populate('role')
+      .populate('status');
+
+    return updatedUser;
+  }
+  async updateUserProfile(
+    idUserDto: IdUserDto,
+    updateUserProfileDto: UpdateUserProfileDto,
+  ): Promise<User> {
+    const user = await this.userModel.findById(idUserDto.id).populate('role');
+
+    if (!user)
+      throw new NotFoundException(`id user: ${idUserDto.id} not found`);
+    const { name, email, yearOfBirth, address, username } = updateUserProfileDto;
+
+    const updatedUser = await this.userModel
+      .findByIdAndUpdate(
+        idUserDto.id,
+        { name, email, username, yearOfBirth, address},
         { new: true, runValidators: true },
       )
       .populate('role')
