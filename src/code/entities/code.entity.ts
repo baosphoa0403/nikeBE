@@ -8,5 +8,8 @@ export class Code {
 
     @Prop()
     codeValue: number;
+
+    @Prop({default: Date.now})
+    createDate: Date
 }
 export const CodeSchema = SchemaFactory.createForClass(Code);

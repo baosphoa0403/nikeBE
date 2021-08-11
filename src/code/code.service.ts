@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateCodeDto } from './dto/create-code.dto';
@@ -13,19 +13,27 @@ export class CodeService {
     return code.save();
   }
 
-  findAll() {
-    return `This action returns all code`;
+  async findAll() {
+    return await this.codeModel.find({}, {__v: 0});
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} code`;
+  async findOne(id: string) {
+    return await this.codeModel.findById({_id: id}, {__v: 0});
   }
 
-  update(id: number, updateCodeDto: UpdateCodeDto) {
-    return `This action updates a #${id} code`;
+  async update(id: string, updateCodeDto: UpdateCodeDto) {
+    const code = await this.codeModel.findById({_id: id});
+    if (!code) {
+      throw new BadRequestException("code not found");
+    }
+    const {codeName, codeValue} = updateCodeDto;
+    await this.codeModel.updateOne({_id: id}, {$set: {codeName: codeName, codeValue: codeValue}})
+    return `Update code successfully ${id} code`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} code`;
+  async remove(id: string) {
+    const code = await this.findOne(id);
+    await code.remove();
+    return `remove ${id} code successfully`;
   }
 }
