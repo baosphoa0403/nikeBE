@@ -2,11 +2,11 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsInt, IsMongoId } from 'class-validator';
 import { IsNotBlank } from 'src/custom-validator/is-not-blank.validator';
 
-export class UpdateUserDto {
-  @IsNotBlank('password', { message: 'password can not empty' })
+export class UpdateUserProfileDto {
+  @IsNotBlank('username', { message: 'username can not empty' })
   @ApiProperty({ type: String })
-  password: string;
-
+  username: string;
+  
   @IsEmail()
   @ApiProperty({ type: String })
   email: string;
@@ -21,12 +21,4 @@ export class UpdateUserDto {
 
   @ApiProperty({ type: String })
   address: string;
-
-  @IsMongoId()
-  @ApiProperty({ type: String })
-  statusId: string;
-
-  @IsMongoId()
-  @ApiProperty({ type: String })
-  roleId: string;
 }

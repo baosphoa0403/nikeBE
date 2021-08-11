@@ -20,12 +20,13 @@ const category_entity_1 = require("../category/entities/category.entity");
 const color_entity_1 = require("../color/entities/color.entity");
 const status_enum_1 = require("../common/status.enum");
 const gender_entity_1 = require("../gender/entities/gender.entity");
+const image_entity_1 = require("../image/entities/image.entity");
 const size_entity_1 = require("../size/entities/size.entity");
 const status_entity_1 = require("../status/entities/status.entity");
 const product_detail_entity_1 = require("./entities/product-detail.entity");
 const product_entity_1 = require("./entities/product.entity");
 let ProductService = class ProductService {
-    constructor(productModel, productDetailModel, categoryModel, statusModel, colorModel, genderModel, sizeModel) {
+    constructor(productModel, productDetailModel, categoryModel, statusModel, colorModel, genderModel, sizeModel, imageModel) {
         this.productModel = productModel;
         this.productDetailModel = productDetailModel;
         this.categoryModel = categoryModel;
@@ -33,6 +34,7 @@ let ProductService = class ProductService {
         this.colorModel = colorModel;
         this.genderModel = genderModel;
         this.sizeModel = sizeModel;
+        this.imageModel = imageModel;
     }
     async findWithFilter(filter) {
         const activeStatus = await this.findStatusWithName(status_enum_1.StatusEnum.Active);
@@ -67,18 +69,23 @@ let ProductService = class ProductService {
             .populate('size')
             .populate('color');
         const result = [];
-        details.forEach((detail) => {
+        for (const detail of details) {
             const tmp = result.find((item) => item.product === detail.product);
             if (tmp) {
-                tmp.details.push(detail.depopulate('product'));
-            }
-            else {
-                result.push({
-                    product: detail.product,
-                    details: [detail.depopulate('product')],
+                const images = await this.imageModel.find({ idShoesDetail: detail });
+                tmp.details.push({
+                    info: detail.depopulate('product'),
+                    images: images,
                 });
             }
-        });
+            else {
+                const images = await this.imageModel.find({ idShoesDetail: detail });
+                result.push({
+                    product: detail.product,
+                    details: [{ info: detail.depopulate('product'), images: images }],
+                });
+            }
+        }
         return result;
     }
     async findStatusWithName(name) {
@@ -230,7 +237,9 @@ ProductService = __decorate([
     __param(4, mongoose_1.InjectModel(color_entity_1.Color.name)),
     __param(5, mongoose_1.InjectModel(gender_entity_1.Gender.name)),
     __param(6, mongoose_1.InjectModel(size_entity_1.Size.name)),
+    __param(7, mongoose_1.InjectModel(image_entity_1.Image.name)),
     __metadata("design:paramtypes", [mongoose_2.Model,
+        mongoose_2.Model,
         mongoose_2.Model,
         mongoose_2.Model,
         mongoose_2.Model,

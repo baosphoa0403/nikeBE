@@ -22,6 +22,7 @@ const role_entity_1 = require("../role/entities/role.entity");
 const status_entity_1 = require("../status/entities/status.entity");
 const user_entity_1 = require("./entities/user.entity");
 const status_enum_1 = require("../common/status.enum");
+const common_2 = require("@nestjs/common");
 let UserService = class UserService {
     constructor(userModel, roleModel, StatusModel) {
         this.userModel = userModel;
@@ -59,6 +60,39 @@ let UserService = class UserService {
             .findById(userSave._id, { password: 0 })
             .populate('role')
             .populate('status');
+    }
+    async createUserProfile(createUserDto) {
+        const salt = await bcrypt.genSalt();
+        const password = await this.hashPassword(createUserDto.password, salt);
+        const statusActive = await this.StatusModel.findOne({ nameStatus: "active" });
+        const roleUser = await this.roleModel.findOne({ nameRole: "User" });
+        const { username, email, name, yearOfBirth, address } = createUserDto;
+        const user = new this.userModel({
+            username,
+            password,
+            email,
+            name,
+            yearOfBirth,
+            address,
+            status: statusActive._id,
+            role: roleUser._id,
+        });
+        const userSave = await user.save().catch((err) => {
+            throw new common_1.BadRequestException('Username or email is existed');
+        });
+        return this.userModel
+            .findById(userSave._id, { password: 0 })
+            .populate('role')
+            .populate('status');
+    }
+    async updatePassword({ password }, idUserDto) {
+        const salt = await bcrypt.genSalt();
+        const hashpassword = await this.hashPassword(password, salt);
+        await this.userModel.findByIdAndUpdate(idUserDto.id, { password: hashpassword });
+        return {
+            message: "update password successfully",
+            statusCode: common_2.HttpStatus.PERMANENT_REDIRECT
+        };
     }
     async findAllUser() {
         const activeStatus = await this.findStatusWithName(status_enum_1.StatusEnum.Active);
@@ -98,6 +132,17 @@ let UserService = class UserService {
         const { name, email, yearOfBirth, address } = updateUserDto;
         const updatedUser = await this.userModel
             .findByIdAndUpdate(idUserDto.id, { name, email, hashpassword, yearOfBirth, address, status, role }, { new: true, runValidators: true })
+            .populate('role')
+            .populate('status');
+        return updatedUser;
+    }
+    async updateUserProfile(idUserDto, updateUserProfileDto) {
+        const user = await this.userModel.findById(idUserDto.id).populate('role');
+        if (!user)
+            throw new common_1.NotFoundException(`id user: ${idUserDto.id} not found`);
+        const { name, email, yearOfBirth, address, username } = updateUserProfileDto;
+        const updatedUser = await this.userModel
+            .findByIdAndUpdate(idUserDto.id, { name, email, username, yearOfBirth, address }, { new: true, runValidators: true })
             .populate('role')
             .populate('status');
         return updatedUser;
