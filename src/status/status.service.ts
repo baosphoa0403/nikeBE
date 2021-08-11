@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { StatusEnum } from 'src/common/status.enum';
 import { Product } from 'src/product/entities/product.entity';
 import { ProductService } from 'src/product/product.service';
 import { CreateStatusDto } from './dto/create-status.dto';
@@ -27,6 +28,9 @@ export class StatusService {
   }
   async findAll(): Promise<Status[]> {
     return await this.statusModel.find().populate('listProduct');
+  }
+  async findByName(name: string): Promise<Status> {
+    return await this.statusModel.findOne({nameStatus: name});
   }
 
   async findOne(id: string): Promise<Status> {

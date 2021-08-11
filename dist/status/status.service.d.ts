@@ -9,6 +9,7 @@ export declare class StatusService {
     constructor(statusModel: Model<StatusDocument>, productService: ProductService);
     create(createStatusDto: CreateStatusDto): Promise<Status>;
     findAll(): Promise<Status[]>;
+    findByName(name: string): Promise<Status>;
     findOne(id: string): Promise<Status>;
     update(id: string, updateStatusDto: UpdateStatusDto): Promise<Status>;
     remove(id: string): Promise<string>;
