@@ -13,6 +13,8 @@ import { UserModule } from './user/user.module';
 import { GoogleModule } from './google/google.module';
 import { AuthModule } from './auth/auth.module';
 import { FacebookModule } from './facebook/facebook.module';
+import { CodeModule } from './code/code.module';
+import { CodeDetailModule } from './code-detail/code-detail.module';
 import { ImageModule } from './image/image.module';
 import * as mongoose from 'mongoose';
 mongoose.set('useCreateIndex', true);
@@ -30,6 +32,8 @@ mongoose.set('useCreateIndex', true);
     GoogleModule,
     AuthModule,
     FacebookModule,
+    CodeModule,
+    CodeDetailModule,
     ImageModule,
   ],
   controllers: [AppController],

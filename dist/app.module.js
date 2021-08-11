@@ -22,6 +22,8 @@ const user_module_1 = require("./user/user.module");
 const google_module_1 = require("./google/google.module");
 const auth_module_1 = require("./auth/auth.module");
 const facebook_module_1 = require("./facebook/facebook.module");
+const code_module_1 = require("./code/code.module");
+const code_detail_module_1 = require("./code-detail/code-detail.module");
 const image_module_1 = require("./image/image.module");
 const mongoose = require("mongoose");
 mongoose.set('useCreateIndex', true);
@@ -42,6 +44,8 @@ AppModule = __decorate([
             google_module_1.GoogleModule,
             auth_module_1.AuthModule,
             facebook_module_1.FacebookModule,
+            code_module_1.CodeModule,
+            code_detail_module_1.CodeDetailModule,
             image_module_1.ImageModule,
         ],
         controllers: [app_controller_1.AppController],
