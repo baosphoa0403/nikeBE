@@ -10,6 +10,7 @@ export class CreateProductDto {
   @IsMongoId()
   @ApiProperty({ type: String })
   categoryId: string;
+  
   @IsDateString()
   @ApiProperty({ type: Date })
   createDate: Date;

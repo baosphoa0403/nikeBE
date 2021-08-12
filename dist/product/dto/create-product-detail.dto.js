@@ -12,6 +12,23 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreateProductDetailDto = void 0;
 const swagger_1 = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
+class Quantity {
+}
+__decorate([
+    class_validator_1.IsNumber(),
+    swagger_1.ApiProperty({ type: Number }),
+    __metadata("design:type", Number)
+], Quantity.prototype, "quantity", void 0);
+__decorate([
+    class_validator_1.IsMongoId(),
+    swagger_1.ApiProperty({ type: String }),
+    __metadata("design:type", String)
+], Quantity.prototype, "sizeId", void 0);
+__decorate([
+    class_validator_1.IsNumber(),
+    swagger_1.ApiProperty({ type: Number }),
+    __metadata("design:type", Number)
+], Quantity.prototype, "price", void 0);
 class CreateProductDetailDto {
 }
 __decorate([
@@ -30,19 +47,12 @@ __decorate([
     __metadata("design:type", String)
 ], CreateProductDetailDto.prototype, "genderId", void 0);
 __decorate([
-    class_validator_1.IsMongoId(),
-    swagger_1.ApiProperty({ type: String }),
-    __metadata("design:type", String)
-], CreateProductDetailDto.prototype, "sizeId", void 0);
+    swagger_1.ApiProperty({ type: [Quantity] }),
+    __metadata("design:type", Array)
+], CreateProductDetailDto.prototype, "quantities", void 0);
 __decorate([
-    class_validator_1.IsNumber(),
-    swagger_1.ApiProperty({ type: Number }),
-    __metadata("design:type", Number)
-], CreateProductDetailDto.prototype, "price", void 0);
-__decorate([
-    class_validator_1.IsNumber(),
-    swagger_1.ApiProperty({ type: Number }),
-    __metadata("design:type", Number)
-], CreateProductDetailDto.prototype, "quantity", void 0);
+    swagger_1.ApiProperty({ type: [String] }),
+    __metadata("design:type", Array)
+], CreateProductDetailDto.prototype, "imageUrls", void 0);
 exports.CreateProductDetailDto = CreateProductDetailDto;
 //# sourceMappingURL=create-product-detail.dto.js.map

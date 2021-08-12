@@ -18,6 +18,7 @@ import {
 import { Size, SizeSchema } from 'src/size/entities/size.entity';
 import { Image, ImageSchema } from 'src/image/entities/image.entity';
 import { ImageService } from 'src/image/image.service';
+import { Quantity, QuantitySchema } from './entities/quantity.entity';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { ImageService } from 'src/image/image.service';
       { name: Gender.name, schema: GenderSchema },
       { name: Size.name, schema: SizeSchema },
       { name: Image.name, schema: ImageSchema },
+      { name: Quantity.name, schema: QuantitySchema },
     ]),
     forwardRef(() => StatusModule),
   ],
