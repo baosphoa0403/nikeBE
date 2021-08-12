@@ -19,6 +19,6 @@ export class CreateOrderDto {
     @ApiProperty({
         type: Date,
     })
-    @IsDate()
+    // @IsDate()
     dateShip: Date
 }

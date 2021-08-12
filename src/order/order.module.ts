@@ -6,6 +6,7 @@ import { Order, OrderSchema } from './entities/order.entity';
 import { OrderDetail, OrderDetailSchema } from './entities/orderDetail.entity';
 import { ProductDetail, ProductDetailSchema } from 'src/product/entities/product-detail.entity';
 import { StatusModule } from 'src/status/status.module';
+import { CodeDetailModule } from 'src/code-detail/code-detail.module';
 
 @Module({
   imports: [
@@ -14,7 +15,8 @@ import { StatusModule } from 'src/status/status.module';
       {name: OrderDetail.name, schema: OrderDetailSchema},
       {name: ProductDetail.name, schema: ProductDetailSchema}
     ]),
-    StatusModule
+    StatusModule,
+    CodeDetailModule
   ],
   controllers: [OrderController],
   providers: [OrderService]

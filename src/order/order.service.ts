@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { CodeDetailService } from 'src/code-detail/code-detail.service';
 import { StatusEnum } from 'src/common/status.enum';
 import { ProductDetail } from 'src/product/entities/product-detail.entity';
 import { StatusService } from 'src/status/status.service';
@@ -15,25 +16,30 @@ export class OrderService {
     @InjectModel(Order.name) private orderModel: Model<Order>,
     @InjectModel(OrderDetail.name) private orderDetailMode: Model<OrderDetail>,
     @InjectModel(ProductDetail.name) private productDetailModel: Model<ProductDetail> ,
-    private statusService: StatusService
+    private statusService: StatusService,
+    private codeDetailService: CodeDetailService
   ){}
   async create(createOrderDto: CreateOrderDto) {
     const {dateShip,idDiscount,listIdDetailProduct} = createOrderDto;
     const statusActive = await this.statusService.findByName(StatusEnum.Active);
-    const arrayProductProblem = [];
+    const arrayProduct = [];
+    let mess = "";
     for (const idDetailProduct of listIdDetailProduct) {
       const productDetail = await this.productDetailModel.findOne({_id: idDetailProduct, quantity: {$gt: 0}, status: statusActive});
+      // console.log(productDetail);
       if (!productDetail) {
-        arrayProductProblem.push(idDetailProduct);
+        mess += idDetailProduct + " ";
       }else{
-
+        arrayProduct.push(productDetail);
       }
     }
-    if (arrayProductProblem.length > 0 ) {
-      // zomai code tiep :))
-      
+    if (mess !== "") {
+      throw new BadRequestException(`${mess} quantity = 0`);
     }
-    console.log(createOrderDto);
+    const discountCode = await this.codeDetailService.findOne(idDiscount);
+    console.log(discountCode);
+    
+    // console.log(createOrderDto);
     return 'This action adds a new order';
   }
 
