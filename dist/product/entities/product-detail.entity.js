@@ -16,7 +16,6 @@ const gender_entity_1 = require("../../gender/entities/gender.entity");
 const status_entity_1 = require("../../status/entities/status.entity");
 const product_entity_1 = require("./product.entity");
 const mongoose = require("mongoose");
-const size_entity_1 = require("../../size/entities/size.entity");
 let ProductDetail = class ProductDetail {
 };
 __decorate([
@@ -35,18 +34,6 @@ __decorate([
     mongoose_1.Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Gender' }),
     __metadata("design:type", gender_entity_1.Gender)
 ], ProductDetail.prototype, "gender", void 0);
-__decorate([
-    mongoose_1.Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Size' }),
-    __metadata("design:type", size_entity_1.Size)
-], ProductDetail.prototype, "size", void 0);
-__decorate([
-    mongoose_1.Prop(),
-    __metadata("design:type", Number)
-], ProductDetail.prototype, "price", void 0);
-__decorate([
-    mongoose_1.Prop(),
-    __metadata("design:type", Number)
-], ProductDetail.prototype, "quantity", void 0);
 ProductDetail = __decorate([
     mongoose_1.Schema()
 ], ProductDetail);

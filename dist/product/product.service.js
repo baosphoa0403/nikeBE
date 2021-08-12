@@ -21,12 +21,15 @@ const color_entity_1 = require("../color/entities/color.entity");
 const status_enum_1 = require("../common/status.enum");
 const gender_entity_1 = require("../gender/entities/gender.entity");
 const image_entity_1 = require("../image/entities/image.entity");
+const image_service_1 = require("../image/image.service");
 const size_entity_1 = require("../size/entities/size.entity");
 const status_entity_1 = require("../status/entities/status.entity");
 const product_detail_entity_1 = require("./entities/product-detail.entity");
 const product_entity_1 = require("./entities/product.entity");
+const quantity_entity_1 = require("./entities/quantity.entity");
+const product_detail_1 = require("./response/product-detail");
 let ProductService = class ProductService {
-    constructor(productModel, productDetailModel, categoryModel, statusModel, colorModel, genderModel, sizeModel, imageModel) {
+    constructor(productModel, productDetailModel, categoryModel, statusModel, colorModel, genderModel, sizeModel, imageModel, imageService, quantityModel) {
         this.productModel = productModel;
         this.productDetailModel = productDetailModel;
         this.categoryModel = categoryModel;
@@ -35,6 +38,17 @@ let ProductService = class ProductService {
         this.genderModel = genderModel;
         this.sizeModel = sizeModel;
         this.imageModel = imageModel;
+        this.imageService = imageService;
+        this.quantityModel = quantityModel;
+    }
+    async findStatusWithName(name) {
+        return await this.statusModel
+            .findOne({
+            nameStatus: name,
+        })
+            .catch(() => {
+            throw new common_1.BadRequestException('something wrong');
+        });
     }
     async findWithFilter(filter) {
         const activeStatus = await this.findStatusWithName(status_enum_1.StatusEnum.Active);
@@ -60,42 +74,43 @@ let ProductService = class ProductService {
             product: { $in: products },
             gender: { $in: genders },
             color: { $in: colors },
-            size: { $in: sizes },
-            quantity: { $gt: 0 },
             status: activeStatus,
-        })
-            .populate('product')
-            .populate('gender')
-            .populate('size')
-            .populate('color');
+        }, { __v: 0 })
+            .populate('product', { __v: 0 })
+            .populate('gender', { __v: 0 })
+            .populate('color', { __v: 0 });
         const result = [];
         for (const detail of details) {
             const tmp = result.find((item) => item.product === detail.product);
             if (tmp) {
-                const images = await this.imageModel.find({ idShoesDetail: detail });
+                const images = await this.imageModel.find({ idShoesDetail: detail }, { __v: 0 });
+                const quantities = await this.quantityModel.find({
+                    productDetail: detail,
+                }, { __v: 0 });
                 tmp.details.push({
                     info: detail.depopulate('product'),
+                    quantities: quantities,
                     images: images,
                 });
             }
             else {
-                const images = await this.imageModel.find({ idShoesDetail: detail });
+                const images = await this.imageModel.find({ idShoesDetail: detail }, { __v: 0 });
+                const quantities = await this.quantityModel.find({
+                    productDetail: detail,
+                }, { __v: 0 });
                 result.push({
                     product: detail.product,
-                    details: [{ info: detail.depopulate('product'), images: images }],
+                    details: [
+                        {
+                            info: detail.depopulate('product'),
+                            quantities: quantities,
+                            images: images,
+                        },
+                    ],
                 });
             }
         }
         return result;
-    }
-    async findStatusWithName(name) {
-        return await this.statusModel
-            .findOne({
-            nameStatus: name,
-        })
-            .catch(() => {
-            throw new common_1.BadRequestException('something wrong');
-        });
     }
     async createProduct(createProductDto) {
         const { name, categoryId, createDate } = createProductDto;
@@ -107,25 +122,15 @@ let ProductService = class ProductService {
     }
     async getAllProduct() {
         const activeStatus = await this.findStatusWithName(status_enum_1.StatusEnum.Active);
-        const products = await this.productModel.find().populate('category');
-        const result = [];
-        for (const product of products) {
-            const details = await this.productDetailModel.find({
-                product,
-                status: activeStatus,
-                quantity: { $gt: 0 },
-            });
-            if (details.length > 0) {
-                console.log(details);
-                result.push(product);
-            }
-        }
-        return result;
+        const products = await this.productModel
+            .find({}, { __v: 0 })
+            .populate('category', { __v: 0 });
+        return products;
     }
     async findOne(idProduct) {
         const product = await this.productModel
-            .findById(idProduct)
-            .populate('category');
+            .findById(idProduct, { __v: 0 })
+            .populate('category', { __v: 0 });
         if (!product)
             throw new common_1.NotFoundException('product not existed');
         return product;
@@ -137,7 +142,7 @@ let ProductService = class ProductService {
             throw new common_1.NotFoundException('category not existed');
         const product = this.productModel
             .findByIdAndUpdate(idProduct, { name, category }, { new: true, runValidators: true })
-            .populate('category');
+            .populate('category', { __v: 0 });
         return product;
     }
     async deleteProduct(idProduct) {
@@ -149,7 +154,7 @@ let ProductService = class ProductService {
         return `delete product ${idProduct} successful`;
     }
     async insertDetail(idProduct, createProductDetailDto) {
-        const { statusId, colorId, genderId, price, quantity, sizeId } = createProductDetailDto;
+        const { statusId, colorId, genderId, imageUrls, quantities } = createProductDetailDto;
         const product = await this.findOne(idProduct);
         const status = await this.statusModel.findById(statusId);
         if (!status)
@@ -160,65 +165,126 @@ let ProductService = class ProductService {
         const gender = await this.genderModel.findById(genderId);
         if (!gender)
             throw new common_1.NotFoundException('gender not existed');
-        const size = await this.sizeModel.findById(sizeId);
-        if (!size)
-            throw new common_1.NotFoundException('size not existed');
+        const response = new product_detail_1.ProductDetailResponse();
         const productDetail = await new this.productDetailModel({
             product,
             status,
             color,
             gender,
-            size,
-            price,
-            quantity,
+        })
+            .save()
+            .catch(() => {
+            throw new common_1.BadRequestException('Insert detail not success');
         });
-        return (await productDetail.save())
-            .populate('product')
-            .populate('status')
-            .populate('color')
-            .populate('gender');
+        response.info = productDetail.depopulate('product');
+        for (const url of imageUrls) {
+            const img = await this.imageService.create({
+                urlImage: url,
+                idShoesDetail: productDetail._id,
+            });
+            if (!response.images)
+                response.images = [];
+            response.images.push(img.depopulate('idShoesDetail'));
+        }
+        for (const quantity of quantities) {
+            const size = await this.sizeModel.findById(quantity.sizeId).catch(() => {
+                throw new common_1.BadRequestException('Insert detail not success');
+            });
+            if (!size)
+                throw new common_1.BadRequestException('Insert detail not success');
+            const quantityEntity = await new this.quantityModel({
+                quantity: quantity.quantity,
+                size: size,
+                price: quantity.price,
+                productDetail: productDetail,
+            })
+                .save()
+                .catch(() => {
+                throw new common_1.NotFoundException('Insert detail not success');
+            });
+            if (!response.quantities)
+                response.quantities = [];
+            response.quantities.push(quantityEntity.depopulate('productDetail'));
+        }
+        return response;
     }
     async getAllProductDetail(idProduct) {
         const product = await this.findOne(idProduct);
         const activeStatus = await this.findStatusWithName(status_enum_1.StatusEnum.Active);
+        const response = [];
         const productDetails = await this.productDetailModel
-            .find({ product: product, status: activeStatus, quantity: { $gt: 0 } }, { product: 0 })
-            .populate('status')
-            .populate('color')
-            .populate('gender');
-        return productDetails;
+            .find({ product: product, status: activeStatus }, { __v: 0 })
+            .populate('status', { __v: 0 })
+            .populate('color', { __v: 0 })
+            .populate('gender', { __v: 0 });
+        for (const detail of productDetails) {
+            const quantities = await this.quantityModel.find({
+                productDetail: detail,
+                quantity: { $gt: 0 },
+            }, { __v: 0 });
+            if (quantities.length > 0) {
+                const images = await this.imageModel.find({ idShoesDetail: detail }, { __v: 0 });
+                response.push({ info: detail, quantities, images });
+            }
+        }
+        return response;
     }
     async updateProductDetail(idProductDetail, updateProductDetailDto) {
-        const { statusId, colorId, genderId, price, quantity, sizeId } = updateProductDetailDto;
-        let status = null;
-        status = await this.statusModel.findById(statusId);
+        const { statusId, colorId, genderId, imageUrls, quantities } = updateProductDetailDto;
+        const status = await this.statusModel.findById(statusId);
         if (!status)
             throw new common_1.NotFoundException('status not existed');
-        let color = null;
-        color = await this.colorModel.findById(colorId);
+        const color = await this.colorModel.findById(colorId);
         if (!color)
             throw new common_1.NotFoundException('color not existed');
-        let gender = null;
-        gender = await this.genderModel.findById(genderId);
+        const gender = await this.genderModel.findById(genderId);
         if (!gender)
             throw new common_1.NotFoundException('gender not existed');
-        let size = null;
-        size = await this.sizeModel.findById(sizeId);
-        if (!size)
-            throw new common_1.NotFoundException('size not existed');
-        const productDetail = await this.productDetailModel
-            .findByIdAndUpdate(idProductDetail, {
-            status,
-            color,
-            gender,
-            size,
-            price,
-            quantity,
-        }, { new: true, runValidators: true })
-            .populate('status')
-            .populate('color')
-            .populate('gender');
-        return productDetail;
+        const response = new product_detail_1.ProductDetailResponse();
+        const productDetail = await this.productDetailModel.findByIdAndUpdate({ _id: idProductDetail }, {
+            status: status,
+            color: color,
+            gender: gender,
+        });
+        response.info = productDetail;
+        if (imageUrls.length > 0) {
+            await this.imageModel.deleteMany({ idShoesDetail: productDetail });
+            for (const url of imageUrls) {
+                const img = await this.imageService.create({
+                    urlImage: url,
+                    idShoesDetail: productDetail._id,
+                });
+                if (!response.images)
+                    response.images = [];
+                response.images.push(img.depopulate('idShoesDetail'));
+            }
+        }
+        if (quantities.length > 0) {
+            await this.quantityModel.deleteMany({ productDetail: productDetail });
+            for (const quantity of quantities) {
+                const size = await this.sizeModel
+                    .findById(quantity.sizeId)
+                    .catch(() => {
+                    throw new common_1.BadRequestException('Update detail failed');
+                });
+                if (!size)
+                    throw new common_1.BadRequestException('Update detail failed');
+                const quantityEntity = await new this.quantityModel({
+                    quantity: quantity.quantity,
+                    size: size,
+                    price: quantity.price,
+                    productDetail: productDetail,
+                })
+                    .save()
+                    .catch(() => {
+                    throw new common_1.NotFoundException('Insert detail not success');
+                });
+                if (!response.quantities)
+                    response.quantities = [];
+                response.quantities.push(quantityEntity.depopulate('productDetail'));
+            }
+        }
+        return response;
     }
     async deleteProductDetail(idProductDetail) {
         const inActiveStatus = await this.findStatusWithName(status_enum_1.StatusEnum.Inactive);
@@ -238,6 +304,7 @@ ProductService = __decorate([
     __param(5, mongoose_1.InjectModel(gender_entity_1.Gender.name)),
     __param(6, mongoose_1.InjectModel(size_entity_1.Size.name)),
     __param(7, mongoose_1.InjectModel(image_entity_1.Image.name)),
+    __param(9, mongoose_1.InjectModel(quantity_entity_1.Quantity.name)),
     __metadata("design:paramtypes", [mongoose_2.Model,
         mongoose_2.Model,
         mongoose_2.Model,
@@ -245,6 +312,8 @@ ProductService = __decorate([
         mongoose_2.Model,
         mongoose_2.Model,
         mongoose_2.Model,
+        mongoose_2.Model,
+        image_service_1.ImageService,
         mongoose_2.Model])
 ], ProductService);
 exports.ProductService = ProductService;
