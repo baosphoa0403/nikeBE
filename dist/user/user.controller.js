@@ -46,8 +46,8 @@ let UserController = class UserController {
     findOne(payload) {
         return this.userService.findOneUser({ id: payload.userId });
     }
-    update(payload, updateUserDto) {
-        return this.userService.updateUser({ id: payload.userId }, updateUserDto);
+    update(id, updateUserDto) {
+        return this.userService.updateUser({ id: id }, updateUserDto);
     }
     updateProfileUser(payload, updateUserProfileDto) {
         return this.userService.updateUserProfile({ id: payload.userId }, updateUserProfileDto);
@@ -110,18 +110,17 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "findOne", null);
 __decorate([
-    common_1.Patch('/update'),
+    common_1.Patch('/update/:id'),
     roles_decorator_1.Roles(role_enum_1.ListRole.Admin),
     swagger_1.ApiResponse({
         status: 200,
         description: 'Update a User by id role admin',
         type: user_entity_1.User,
     }),
-    __param(0, decorator_1.GetUser()),
+    __param(0, common_1.Param('id')),
     __param(1, common_1.Body()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [payload_1.Payload,
-        update_user_dto_1.UpdateUserDto]),
+    __metadata("design:paramtypes", [String, update_user_dto_1.UpdateUserDto]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "update", null);
 __decorate([

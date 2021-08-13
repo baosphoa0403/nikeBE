@@ -14,7 +14,7 @@ export declare class UserController {
     createUser(createUserProfileDto: CreateUserProfileDto): Promise<User>;
     findAll(): Promise<User[]>;
     findOne(payload: Payload): Promise<User>;
-    update(payload: Payload, updateUserDto: UpdateUserDto): Promise<User>;
+    update(id: string, updateUserDto: UpdateUserDto): Promise<User>;
     updateProfileUser(payload: Payload, updateUserProfileDto: UpdateUserProfileDto): Promise<User>;
     updatePassword(payload: Payload, password: UpdatePassword): Promise<{
         message: string;
