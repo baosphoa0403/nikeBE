@@ -17,7 +17,7 @@ import { StatusModule } from 'src/status/status.module';
     StatusModule
   ],
   controllers: [CodeDetailController],
-  providers: [CodeDetailService],
-  exports: [CodeDetailService]
+  exports: [CodeDetailService],
+  providers: [CodeDetailService]
 })
 export class CodeDetailModule {}

@@ -1,6 +1,16 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsDate, IsMongoId } from "class-validator";
+import { IsMongoId } from "class-validator";
+export class DetailProduct {
+    @ApiProperty({
+        type: String,
+    })
+    idProduct: string
 
+    @ApiProperty({
+        type: Number,
+    })
+    quantity: number
+}
 export class CreateOrderDto {
     @IsMongoId()
     @ApiProperty({
@@ -9,12 +19,9 @@ export class CreateOrderDto {
     idDiscount: string;
 
     @ApiProperty({
-        type: [String],
+        type: [DetailProduct],
     })
-    @IsMongoId({
-        each: true
-    })
-    listIdDetailProduct: string[]
+    listDetailProduct: DetailProduct[]
 
     @ApiProperty({
         type: Date,

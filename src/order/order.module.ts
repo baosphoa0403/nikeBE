@@ -13,7 +13,7 @@ import { CodeDetailModule } from 'src/code-detail/code-detail.module';
     MongooseModule.forFeature([
       {name: Order.name, schema: OrderSchema},
       {name: OrderDetail.name, schema: OrderDetailSchema},
-      {name: ProductDetail.name, schema: ProductDetailSchema}
+      {name: ProductDetail.name, schema: ProductDetailSchema},
     ]),
     StatusModule,
     CodeDetailModule
