@@ -21,9 +21,9 @@ const product_entity_1 = require("./entities/product.entity");
 const swagger_1 = require("@nestjs/swagger");
 const id_product_dto_1 = require("./dto/id-product.dto");
 const product_detail_entity_1 = require("./entities/product-detail.entity");
-const update_product_detail_dto_1 = require("./dto/update-product-detail.dto");
 const id_product_detail_dto_1 = require("./dto/id-product-detail.dto");
 const product_filter_dto_1 = require("./dto/product-filter.dto");
+const create_update_product_detail_dto_1 = require("./dto/create-update-product-detail.dto");
 let ProductController = class ProductController {
     constructor(productService) {
         this.productService = productService;
@@ -34,8 +34,8 @@ let ProductController = class ProductController {
     createProduct(createProductDto) {
         return this.productService.createProduct(createProductDto);
     }
-    insertProductDetail(idProductDto, updateProductDetailDto) {
-        return this.productService.insertDetail(idProductDto.id, updateProductDetailDto);
+    insertProductDetail(idProductDto, createProductDetailDto) {
+        return this.productService.insertDetail(idProductDto.id, createProductDetailDto);
     }
     getAllProduct() {
         return this.productService.getAllProduct();
@@ -82,14 +82,14 @@ __decorate([
     common_1.Post(':id/productDetail'),
     swagger_1.ApiResponse({
         status: 201,
-        description: 'Created successfully product detail',
+        description: 'Insert product detail',
         type: product_detail_entity_1.ProductDetail,
     }),
     __param(0, common_1.Param()),
     __param(1, common_1.Body()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [id_product_dto_1.IdProductDto,
-        update_product_detail_dto_1.UpdateProductDetailDto]),
+        create_update_product_detail_dto_1.CreateUpdateProductDetailDto]),
     __metadata("design:returntype", Promise)
 ], ProductController.prototype, "insertProductDetail", null);
 __decorate([
@@ -152,7 +152,7 @@ __decorate([
     __param(1, common_1.Body()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [id_product_detail_dto_1.IdProductDetailDto,
-        update_product_detail_dto_1.UpdateProductDetailDto]),
+        create_update_product_detail_dto_1.CreateUpdateProductDetailDto]),
     __metadata("design:returntype", Promise)
 ], ProductController.prototype, "updateProductDetail", null);
 __decorate([

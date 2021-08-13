@@ -15,9 +15,10 @@ import { Product } from './entities/product.entity';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { IdProductDto } from './dto/id-product.dto';
 import { ProductDetail } from './entities/product-detail.entity';
-import { UpdateProductDetailDto } from './dto/update-product-detail.dto';
 import { IdProductDetailDto } from './dto/id-product-detail.dto';
 import { ProductFilterDto } from './dto/product-filter.dto';
+import { ProductDetailResponse } from './response/product-detail';
+import { CreateUpdateProductDetailDto } from './dto/create-update-product-detail.dto';
 
 @Controller('product')
 @ApiTags('Product')
@@ -42,16 +43,16 @@ export class ProductController {
   @Post(':id/productDetail')
   @ApiResponse({
     status: 201,
-    description: 'Created successfully product detail',
+    description: 'Insert product detail',
     type: ProductDetail,
   })
   insertProductDetail(
     @Param() idProductDto: IdProductDto,
-    @Body() updateProductDetailDto: UpdateProductDetailDto,
-  ): Promise<ProductDetail> {
+    @Body() createProductDetailDto: CreateUpdateProductDetailDto,
+  ): Promise<ProductDetailResponse> {
     return this.productService.insertDetail(
       idProductDto.id,
-      updateProductDetailDto,
+      createProductDetailDto,
     );
   }
 
@@ -73,7 +74,7 @@ export class ProductController {
   })
   getAllProductDetail(
     @Param() idProductDto: IdProductDto,
-  ): Promise<ProductDetail[]> {
+  ): Promise<ProductDetailResponse[]> {
     return this.productService.getAllProductDetail(idProductDto.id);
   }
 
@@ -111,8 +112,8 @@ export class ProductController {
   })
   updateProductDetail(
     @Param() idProductDetailDto: IdProductDetailDto,
-    @Body() updateProductDetailDto: UpdateProductDetailDto,
-  ): Promise<ProductDetail> {
+    @Body() updateProductDetailDto: CreateUpdateProductDetailDto,
+  ): Promise<ProductDetailResponse> {
     return this.productService.updateProductDetail(
       idProductDetailDto.id,
       updateProductDetailDto,

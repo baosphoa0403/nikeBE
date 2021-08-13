@@ -4,7 +4,6 @@ import { Gender } from 'src/gender/entities/gender.entity';
 import { Status } from 'src/status/entities/status.entity';
 import { Product } from './product.entity';
 import * as mongoose from 'mongoose';
-import { Size } from 'src/size/entities/size.entity';
 export type ProductDetailDocument = ProductDetail & Document;
 
 @Schema()
@@ -21,13 +20,5 @@ export class ProductDetail {
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Gender' })
   gender: Gender;
 
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Size' })
-  size: Size;
-
-  @Prop()
-  price: number;
-
-  @Prop()
-  quantity: number;
 }
 export const ProductDetailSchema = SchemaFactory.createForClass(ProductDetail);
