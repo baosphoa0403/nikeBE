@@ -1,22 +1,36 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { OrderService } from './order.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { Roles } from 'src/Guards/roles.decorator';
+import { ListRole } from 'src/auth/role/role.enum';
+import { GetUser } from 'src/Decorator/decorator';
+import { Payload } from 'src/auth/role/payload';
 
-@ApiTags("Order")
+@ApiTags('Order')
 @Controller('order')
 export class OrderController {
   constructor(private readonly orderService: OrderService) {}
 
   @Post()
-  create(@Body() createOrderDto: CreateOrderDto) {
-    return this.orderService.create(createOrderDto);
+  @Roles(ListRole.User)
+  create(@Body() createOrderDto: CreateOrderDto, @GetUser() payload: Payload) {
+    return this.orderService.create(createOrderDto, payload);
   }
 
   @Get()
-  findAll() {
-    return this.orderService.findAll();
+  @Roles(ListRole.User)
+  findAll(@GetUser() user: Payload) {
+    return this.orderService.findAllByUser(user);
   }
 
   @Get(':id')

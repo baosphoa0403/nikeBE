@@ -8,12 +8,18 @@ export class OrderDetail {
 
     @Prop()
     nameProduct: string
+    
+    @Prop()
+    categoryName: string
+
+    @Prop()
+    size: string
+
+    @Prop()
+    quantity: number
 
     @Prop()
     price: number
-
-    @Prop()
-    categoryName: string
 
     @Prop()
     color: string

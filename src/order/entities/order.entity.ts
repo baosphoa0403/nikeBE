@@ -5,26 +5,29 @@ import { Status } from 'src/status/entities/status.entity';
 import { User } from 'src/user/entities/user.entity';
 export type OrderDocument = Order & Document;
 export class Order {
-    @Prop()
-    totalPrice: number
+  @Prop()
+  totalPrice: number;
 
-    @Prop({default: Date.now})
-    dateOrder : Date
+  @Prop()
+  subTotal: number;
 
-    @Prop()
-    dateShip: Date
+  @Prop({ default: Date.now })
+  dateOrder: Date;
 
-    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User'})
-    user: User
+  @Prop()
+  dateShip: Date;
 
-    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Code'})
-    discount: Code
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
+  user: User;
 
-    @Prop()
-    isPayment: boolean
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Code' })
+  discount: Code;
 
-    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Status'})
-    status: Status
+  @Prop()
+  isPayment: boolean;
+
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Status' })
+  status: Status;
 }
 
 export const OrderSchema = SchemaFactory.createForClass(Order);
