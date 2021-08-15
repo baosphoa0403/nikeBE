@@ -214,7 +214,6 @@ let ProductService = class ProductService {
         const response = [];
         const productDetails = await this.productDetailModel
             .find({ product: product, status: activeStatus }, { __v: 0 })
-            .populate('product', { __v: 0 })
             .populate('status', { __v: 0 })
             .populate('color', { __v: 0 })
             .populate('gender', { __v: 0 });

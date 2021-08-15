@@ -4,12 +4,13 @@ import { Code } from 'src/code/entities/code.entity';
 import { Status } from 'src/status/entities/status.entity';
 import { User } from 'src/user/entities/user.entity';
 export type OrderDocument = Order & Document;
+@Schema()
 export class Order {
   @Prop()
   totalPrice: number;
 
   @Prop()
-  subTotal: number;
+  subTotalPrice: number;
 
   @Prop({ default: Date.now })
   dateOrder: Date;
