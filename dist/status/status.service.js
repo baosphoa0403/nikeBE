@@ -16,6 +16,7 @@ exports.StatusService = void 0;
 const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
+const status_enum_1 = require("../common/status.enum");
 const product_entity_1 = require("../product/entities/product.entity");
 const product_service_1 = require("../product/product.service");
 const status_entity_1 = require("./entities/status.entity");
@@ -30,6 +31,9 @@ let StatusService = class StatusService {
     }
     async findAll() {
         return await this.statusModel.find().populate('listProduct');
+    }
+    async findByName(name) {
+        return await this.statusModel.findOne({ nameStatus: name });
     }
     async findOne(id) {
         let status;

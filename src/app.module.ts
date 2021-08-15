@@ -16,6 +16,7 @@ import { FacebookModule } from './facebook/facebook.module';
 import { CodeModule } from './code/code.module';
 import { CodeDetailModule } from './code-detail/code-detail.module';
 import { ImageModule } from './image/image.module';
+import { OrderModule } from './order/order.module';
 import * as mongoose from 'mongoose';
 mongoose.set('useCreateIndex', true);
 @Module({
@@ -35,6 +36,7 @@ mongoose.set('useCreateIndex', true);
     CodeModule,
     CodeDetailModule,
     ImageModule,
+    OrderModule,
   ],
   controllers: [AppController],
   providers: [AppService],
