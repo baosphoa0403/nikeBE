@@ -16,7 +16,6 @@ export class DetailProduct {
   sizeId: string;
 }
 export class CreateOrderDto {
-  @IsMongoId()
   @ApiProperty({
     type: String,
   })

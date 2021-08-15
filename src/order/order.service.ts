@@ -71,25 +71,31 @@ export class OrderService {
     }
 
     const user = await this.userModel.findById(payload.userId);
-    const code = await this.codeModel.findById(idDiscount);
-    const discount = await this.codeDetailModel
-      .findOneAndUpdate(
-        { code: code, user: user, status: statusActive },
-        { status: statusInactive },
-      )
-      .populate('code');
-    console.log(discount);
+    let totalPrice = 0;
+    let discount = null;
+    if (idDiscount) {
+      const code = await this.codeModel.findById(idDiscount);
+      discount = await this.codeDetailModel
+        .findOneAndUpdate(
+          { code: code, user: user, status: statusActive },
+          { status: statusInactive },
+        )
+        .populate('code');
+      console.log(discount);
 
-    if (!discount) throw new BadRequestException('Code discount invalid');
-    const totalPrice =
-      subTotalPrice - (subTotalPrice * discount.code.codeValue) / 100;
+      if (!discount) throw new BadRequestException('Code discount invalid');
+      totalPrice =
+        subTotalPrice - (subTotalPrice * discount.code.codeValue) / 100;
+    } else {
+      totalPrice = subTotalPrice;
+    }
 
     const order = await new this.orderModel({
       totalPrice,
       subTotalPrice,
       dateShip,
       user: user,
-      discount: discount.code,
+      discount: discount ? discount.code : null,
       isPayment: false,
       status: statusActive,
     }).save();
