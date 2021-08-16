@@ -84,9 +84,11 @@ let ProductService = class ProductService {
             const tmp = result.find((item) => item.product === detail.product);
             if (tmp) {
                 const images = await this.imageModel.find({ idShoesDetail: detail }, { __v: 0 });
-                const quantities = await this.quantityModel.find({
+                const quantities = await this.quantityModel
+                    .find({
                     productDetail: detail,
-                }, { __v: 0 });
+                }, { __v: 0 })
+                    .populate('size', { __v: 0 });
                 tmp.details.push({
                     info: detail.depopulate('product'),
                     quantities: quantities,
@@ -97,7 +99,7 @@ let ProductService = class ProductService {
                 const images = await this.imageModel.find({ idShoesDetail: detail }, { __v: 0 });
                 const quantities = await this.quantityModel.find({
                     productDetail: detail,
-                }, { __v: 0 });
+                }, { __v: 0 }).populate('size', { __v: 0 });
                 result.push({
                     product: detail.product,
                     details: [
@@ -219,10 +221,12 @@ let ProductService = class ProductService {
             .populate('color', { __v: 0 })
             .populate('gender', { __v: 0 });
         for (const detail of productDetails) {
-            const quantities = await this.quantityModel.find({
+            const quantities = await this.quantityModel
+                .find({
                 productDetail: detail,
                 quantity: { $gt: 0 },
-            }, { __v: 0 });
+            }, { __v: 0 })
+                .populate('size', { __v: 0 });
             if (quantities.length > 0) {
                 const images = await this.imageModel.find({ idShoesDetail: detail }, { __v: 0 });
                 response.push({ info: detail, quantities, images });
