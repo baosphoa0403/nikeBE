@@ -40,7 +40,7 @@ export class OrderService {
     @InjectModel(Role.name) private roleModel: Model<Role>,
   ) {}
   async create(createOrderDto: CreateOrderDto, payload: Payload) {
-    const { dateShip, idDiscount, listDetailProduct } = createOrderDto;
+    const { dateShip, idDiscount, listDetailProduct,isPayment } = createOrderDto;
     const statusActive = await this.statusService.findByName(StatusEnum.Active);
     const statusInactive = await this.statusService.findByName(
       StatusEnum.Inactive,
@@ -96,7 +96,7 @@ export class OrderService {
       dateShip,
       user: user,
       discount: discount ? discount.code : null,
-      isPayment: false,
+      isPayment: isPayment,
       status: statusActive,
     }).save();
 
