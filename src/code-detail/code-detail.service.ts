@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CodeService } from 'src/code/code.service';
 import { Code } from 'src/code/entities/code.entity';
+import { StatusEnum } from 'src/common/status.enum';
 import { StatusService } from 'src/status/status.service';
 import { UserService } from 'src/user/user.service';
 import { CreateCodeDetailDto } from './dto/create-code-detail.dto';
@@ -27,6 +28,13 @@ export class CodeDetailService {
       await codeDetail.save(); 
     }
     return "create codeDetail successfullly";
+  }
+  async getCodeDetailUser(idUser: string): Promise<CodeDetail[]>{
+    const user = await this.userService.findOneUser({id: idUser});
+    console.log(user);
+    const status =await this.statusService.findByName(StatusEnum.Active);
+    console.log(status);
+    return await this.codeDetailModel.find({user: user, status: status},{__v: 0, user: 0,status: 0}).populate("code");
   }
 
   async findAll() : Promise<CodeDetail[]>{
