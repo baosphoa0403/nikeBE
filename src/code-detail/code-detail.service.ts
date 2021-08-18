@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CodeService } from 'src/code/code.service';
@@ -20,20 +20,36 @@ export class CodeDetailService {
     ){}
   async create(createCodeDetailDto: CreateCodeDetailDto): Promise<string> {
     const {idCode,listIdUsers,idStatus} = createCodeDetailDto;
+    const array = [];
+    const code  = await this.codeService.findOne(idCode);
+    if (!code) {
+      throw new BadRequestException(`codeID: ${code._id} not found`);
+    }
+    const statusActive = await this.statusService.findByName(StatusEnum.Active);
     for (const idUser of listIdUsers) {
       const user = await this.userService.findOneUser({id: idUser});
-      const code  = await this.codeService.findOne(idCode);
-      const status = await this.statusService.findOne(idStatus);
-      const codeDetail =  new this.codeDetailModel({code: code, user: user, status: status});
-      await codeDetail.save(); 
+      const codeDetail = await this.codeDetailModel.findOne({status: statusActive, user: user, code: code});
+      if (codeDetail) {
+        array.push(user.email);
+      }
     }
+    if (array.length === 0) {
+      for (const idUser of listIdUsers) {
+        const user = await this.userService.findOneUser({id: idUser});
+        // const code  = await this.codeService.findOne(idCode);
+        const status = await this.statusService.findOne(idStatus);
+        const codeDetail =  new this.codeDetailModel({code: code, user: user, status: status});
+        await codeDetail.save(); 
+      }
+    }else{
+      throw new BadRequestException(array);
+    }
+    
     return "create codeDetail successfullly";
   }
   async getCodeDetailUser(idUser: string): Promise<CodeDetail[]>{
     const user = await this.userService.findOneUser({id: idUser});
-    console.log(user);
     const status =await this.statusService.findByName(StatusEnum.Active);
-    console.log(status);
     return await this.codeDetailModel.find({user: user, status: status},{__v: 0, user: 0,status: 0}).populate("code");
   }
 
@@ -45,8 +61,11 @@ export class CodeDetailService {
     return await this.codeDetailModel.findById(id, {__v: 0}).populate("code").populate("user").populate("status")
   }
 
-  update(id: number, updateCodeDetailDto: UpdateCodeDetailDto) {
-    return `This action updates a #${id} codeDetail`;
+  async update(id: string, updateCodeDetailDto: UpdateCodeDetailDto) {
+    const {idStatus} = updateCodeDetailDto;
+    const status = await this.statusService.findOne(idStatus);
+    await this.codeDetailModel.findByIdAndUpdate(id, {status: status});    
+    return `Update successfully a ${id} codeDetail status ${status.nameStatus}`;
   }
 
   remove(id: number) {

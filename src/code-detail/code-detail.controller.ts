@@ -37,7 +37,7 @@ export class CodeDetailController {
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateCodeDetailDto: UpdateCodeDetailDto) {
-    return this.codeDetailService.update(+id, updateCodeDetailDto);
+    return this.codeDetailService.update(id, updateCodeDetailDto);
   }
 
   @Delete(':id')

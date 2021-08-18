@@ -5,5 +5,6 @@ var StatusEnum;
 (function (StatusEnum) {
     StatusEnum["Active"] = "active";
     StatusEnum["Inactive"] = "inactive";
+    StatusEnum["Pending"] = "pending";
 })(StatusEnum = exports.StatusEnum || (exports.StatusEnum = {}));
 //# sourceMappingURL=status.enum.js.map
