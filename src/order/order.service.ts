@@ -45,6 +45,9 @@ export class OrderService {
     const statusInactive = await this.statusService.findByName(
       StatusEnum.Inactive,
     );
+    const statusPending = await this.statusService.findByName(
+      StatusEnum.Pending,
+    );
 
     const arrayProduct = new Map();
     let subTotalPrice = 0;
@@ -97,7 +100,7 @@ export class OrderService {
       user: user,
       discount: discount ? discount.code : null,
       isPayment: isPayment,
-      status: statusActive,
+      status: statusPending,
     }).save();
 
     for (const item of arrayProduct) {
@@ -132,8 +135,8 @@ export class OrderService {
     const user = await this.userModel.findById(userId);
     const result: OrderUserResponse[] = [];
     const historyOrder = await this.orderModel
-      .find({ user }, { user: 0, __v: 0, isPayment: 0, status: 0 })
-      .populate('discount', { _id: 0, __v: 0, createDate: 0 });
+      .find({ user }, { user: 0, __v: 0 })
+      .populate('discount', { _id: 0, __v: 0, createDate: 0 }).populate("status", {_id: 0, __v: 0});
 
     for (const item of historyOrder) {
       const details = await this.orderDetailModel.find({ order: item });
@@ -167,8 +170,11 @@ export class OrderService {
     return `This action returns a #${id} order`;
   }
 
-  update(id: number, updateOrderDto: UpdateOrderDto) {
-    return `This action updates a #${id} order`;
+  async update(id: string, updateOrderDto: UpdateOrderDto) {
+    const { idStatus} = updateOrderDto;
+    const status = await this.statusModel.findById({_id: idStatus});
+    await this.orderModel.findByIdAndUpdate(id,{status: status});    
+    return `update successfully ${id} order ${status.nameStatus}`;
   }
 
   remove(id: number) {

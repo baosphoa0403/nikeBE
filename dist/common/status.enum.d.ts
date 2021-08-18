@@ -1,4 +1,5 @@
 export declare enum StatusEnum {
     Active = "active",
-    Inactive = "inactive"
+    Inactive = "inactive",
+    Pending = "pending"
 }
