@@ -155,9 +155,9 @@ export class OrderService {
     for (const user of users) {
       const orders: OrderUserResponse[] = [];
       const historyOrder = await this.orderModel
-        .find({ user }, { user: 0, __v: 0, isPayment: 0, status: 0 })
-        .populate('discount', { _id: 0, __v: 0, createDate: 0 });
-
+        .find({ user }, { user: 0, __v: 0 })
+        .populate('discount', { _id: 0, __v: 0, createDate: 0 })
+        .populate("status", { _id: 0, __v: 0 });        
       for (const item of historyOrder) {
         const details = await this.orderDetailModel.find({ order: item });
         orders.push({ info: item, products: details });
