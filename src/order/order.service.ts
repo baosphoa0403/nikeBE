@@ -40,7 +40,8 @@ export class OrderService {
     @InjectModel(Role.name) private roleModel: Model<Role>,
   ) {}
   async create(createOrderDto: CreateOrderDto, payload: Payload) {
-    const { dateShip, idDiscount, listDetailProduct,isPayment } = createOrderDto;
+    const { dateShip, idDiscount, listDetailProduct, isPayment } =
+      createOrderDto;
     const statusActive = await this.statusService.findByName(StatusEnum.Active);
     const statusInactive = await this.statusService.findByName(
       StatusEnum.Inactive,
@@ -135,8 +136,10 @@ export class OrderService {
     const user = await this.userModel.findById(userId);
     const result: OrderUserResponse[] = [];
     const historyOrder = await this.orderModel
-      .find({ user }, { user: 0, __v: 0 }).sort({"dateOrder": -1})
-      .populate('discount', { _id: 0, __v: 0, createDate: 0 }).populate("status", {_id: 0, __v: 0});
+      .find({ user }, { user: 0, __v: 0 })
+      .sort({ dateOrder: -1 })
+      .populate('discount', { _id: 0, __v: 0, createDate: 0 })
+      .populate('status', { _id: 0, __v: 0 });
 
     for (const item of historyOrder) {
       const details = await this.orderDetailModel.find({ order: item });
@@ -156,10 +159,12 @@ export class OrderService {
       const orders: OrderUserResponse[] = [];
       const historyOrder = await this.orderModel
         .find({ user }, { user: 0, __v: 0 })
-        .sort({"dateOrder": -1})
+        .sort({ dateOrder: -1 })
         .populate('discount', { _id: 0, __v: 0, createDate: 0 })
-        .populate("status", { _id: 0, __v: 0 });             
+        .populate('status', { _id: 0, __v: 0 });
       for (const item of historyOrder) {
+        console.log('item', item);
+
         const details = await this.orderDetailModel.find({ order: item });
         orders.push({ info: item, products: details });
       }
@@ -172,9 +177,9 @@ export class OrderService {
   }
 
   async update(id: string, updateOrderDto: UpdateOrderDto) {
-    const { idStatus} = updateOrderDto;
-    const status = await this.statusModel.findById({_id: idStatus});
-    await this.orderModel.findByIdAndUpdate(id,{status: status});    
+    const { idStatus } = updateOrderDto;
+    const status = await this.statusModel.findById({ _id: idStatus });
+    await this.orderModel.findByIdAndUpdate(id, { status: status });
     return `update successfully ${id} order ${status.nameStatus}`;
   }
 
