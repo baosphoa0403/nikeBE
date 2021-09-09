@@ -5,7 +5,6 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { exception } from 'console';
 import { Model } from 'mongoose';
 import * as bcrypt from 'bcrypt';
 import { IdRoleDto } from 'src/role/dto/id-role.dto';
@@ -70,10 +69,11 @@ export class UserService {
   async createUserProfile(createUserDto: CreateUserProfileDto): Promise<User> {
     const salt = await bcrypt.genSalt();
     const password = await this.hashPassword(createUserDto.password, salt);
-    const statusActive = await this.StatusModel.findOne({nameStatus: "active"});
-    const roleUser = await this.roleModel.findOne({nameRole: "User"});
-    const { username, email, name, yearOfBirth, address} =
-      createUserDto;
+    const statusActive = await this.StatusModel.findOne({
+      nameStatus: 'active',
+    });
+    const roleUser = await this.roleModel.findOne({ nameRole: 'User' });
+    const { username, email, name, yearOfBirth, address } = createUserDto;
 
     const user = new this.userModel({
       username,
@@ -95,13 +95,18 @@ export class UserService {
       .populate('status');
   }
 
-  async updatePassword({password}: UpdatePassword, idUserDto: IdUserDto): Promise<{message: string, statusCode: number}>{
+  async updatePassword(
+    { password }: UpdatePassword,
+    idUserDto: IdUserDto,
+  ): Promise<{ message: string; statusCode: number }> {
     const salt = await bcrypt.genSalt();
     const hashpassword = await this.hashPassword(password, salt);
-    await this.userModel.findByIdAndUpdate(idUserDto.id, {password: hashpassword})
+    await this.userModel.findByIdAndUpdate(idUserDto.id, {
+      password: hashpassword,
+    });
     return {
-      message: "update password successfully",
-      statusCode: HttpStatus.PERMANENT_REDIRECT
+      message: 'update password successfully',
+      statusCode: HttpStatus.PERMANENT_REDIRECT,
     };
   }
 
@@ -172,12 +177,13 @@ export class UserService {
 
     if (!user)
       throw new NotFoundException(`id user: ${idUserDto.id} not found`);
-    const { name, email, yearOfBirth, address, username } = updateUserProfileDto;
+    const { name, email, yearOfBirth, address, username } =
+      updateUserProfileDto;
 
     const updatedUser = await this.userModel
       .findByIdAndUpdate(
         idUserDto.id,
-        { name, email, username, yearOfBirth, address},
+        { name, email, username, yearOfBirth, address },
         { new: true, runValidators: true },
       )
       .populate('role')
